@@ -1,0 +1,56 @@
+{
+  "extends": "tslint-config-airbnb",
+  "rules": {
+    "semicolon": [
+      true,
+      "never"
+    ],
+    "trailing-comma": [
+      false
+    ],
+    "indent": [
+      true,
+      "spaces",
+      2
+    ],
+    "no-trailing-whitespace": true,
+    "max-line-length": [
+      false
+    ],
+    "no-use-before-declare": true,
+    "no-unused-variable": true,
+    "strict-boolean-expressions": [
+      true,
+      "allow-null-union",
+      "allow-undefined-union"
+    ],
+    "variable-name": [
+      true,
+      "allow-leading-underscore",
+      "allow-pascal-case"
+    ],
+    "object-shorthand-properties-first": [
+      false
+    ],
+    "no-banned-terms": true,
+    "no-delete-expression": true,
+    "no-document-domain": true,
+    "no-disable-auto-sanitization": true,
+    "no-duplicate-parameter-names": true,
+    "no-exec-script": true,
+    "no-function-constructor-with-string-args": true,
+    "no-octal-literal": true,
+    "no-reserved-keywords": true,
+    "no-string-based-set-immediate": true,
+    "no-string-based-set-interval": true,
+    "no-string-based-set-timeout": true,
+    "no-eval": true,
+    "possible-timing-attack" : true,
+    "no-inner-html" : true,
+    "insecure-random" : true,
+    "no-document-write" : true,
+    "no-invalid-regexp" : true,
+    "promise-must-complete": true,
+    "import-name": false
+  }
+}
