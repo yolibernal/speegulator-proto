@@ -1,50 +1,22 @@
 import React, { Component } from 'react'
-import { Platform, StyleSheet, Text, View, Alert, AlertAndroid, GeolocationReturnType } from 'react-native'
+import { connect } from 'react-redux'
+import { StyleSheet, Text, View } from 'react-native'
 
 interface Props { }
-class Home extends Component<Props, { speed: any, counter: number, maxSpeed: number }> {
+class Home extends Component<{ geolocation: object }, {}> {
   static navigationOptions = {
-    title: 'Welcome',
+    title: 'Speegulator Prototype',
   }
 
-  constructor(props: Props) {
+  constructor(props: { geolocation: object }) {
     super(props)
-
-    this.state = {
-      speed: -1,
-      counter: 0,
-      maxSpeed: -1
-    }
   }
 
   render() {
     return (
       <View style={styles.container}>
-        <Text style={styles.welcome}>Welcome to React Native!</Text>
-        <Text style={styles.instructions}>To get started, edit App.tsx</Text>
-        <Text>Speed: {JSON.stringify(this.state.speed)}</Text>
-        <Text>Counter: {JSON.stringify(this.state.counter)}</Text>
-        <Text>Max Speed: {JSON.stringify(this.state.maxSpeed)}</Text>
+        <Text>Geolocation: {JSON.stringify(this.props.geolocation)}</Text>
       </View>
-    )
-  }
-
-  componentDidMount() {
-    navigator.geolocation.watchPosition(
-      (position) => {
-        const maxSpeed = Math.max(this.state.speed, position.coords.speed || 0)
-        this.setState(prevState => ({
-          speed: position.coords.speed,
-          counter: prevState.counter + 1,
-          maxSpeed
-        }))
-      },
-      error => console.error(error),
-      {
-        // does not work on emulator (no GPS available)
-        enableHighAccuracy: true,
-        distanceFilter: 0
-      }
     )
   }
 }
@@ -68,4 +40,6 @@ const styles = StyleSheet.create({
   },
 })
 
-export { Home }
+const mapStateToProps = state => ({ geolocation: state.geolocation })
+
+export default connect(mapStateToProps)(Home)
