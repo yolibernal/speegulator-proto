@@ -1,14 +1,18 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { StyleSheet, Text, View } from 'react-native'
+import { Text, View } from 'react-native'
+import styles from './styles'
+import { StateType } from '../../reducers'
 
-interface Props { }
-class Home extends Component<{ geolocation: object }, {}> {
+interface Props {
+  geolocation: object
+}
+class Home extends Component<Props, {}> {
   static navigationOptions = {
     title: 'Speegulator Prototype',
   }
 
-  constructor(props: { geolocation: object }) {
+  constructor(props: Props) {
     super(props)
   }
 
@@ -21,25 +25,6 @@ class Home extends Component<{ geolocation: object }, {}> {
   }
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#F5FCFF',
-  },
-  welcome: {
-    fontSize: 20,
-    textAlign: 'center',
-    margin: 10,
-  },
-  instructions: {
-    textAlign: 'center',
-    color: '#333333',
-    marginBottom: 5,
-  },
-})
-
-const mapStateToProps = state => ({ geolocation: state.geolocation })
+const mapStateToProps = (state: StateType) => ({ geolocation: state.geolocation })
 
 export default connect(mapStateToProps)(Home)

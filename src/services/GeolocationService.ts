@@ -49,25 +49,4 @@ class GeolocationService {
   }
 }
 
-/*
-  componentDidMount() {
-    navigator.geolocation.watchPosition(
-      (position) => {
-        const maxSpeed = Math.max(this.state.speed, position.coords.speed || 0)
-        this.setState(prevState => ({
-          speed: position.coords.speed,
-          counter: prevState.counter + 1,
-          maxSpeed
-        }))
-      },
-      error => console.error(error),
-      {
-        // does not work on emulator (no GPS available)
-        enableHighAccuracy: true,
-        distanceFilter: 0
-      }
-    )
-  }
-*/
-
 export { GeolocationService }
