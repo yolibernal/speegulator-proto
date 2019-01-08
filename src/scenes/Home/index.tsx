@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { Text, View } from 'react-native'
+import { Text, View, TextInput } from 'react-native'
 import styles from './styles'
 import { StateType } from '../../reducers'
 
@@ -20,6 +20,7 @@ class Home extends Component<Props, {}> {
     return (
       <View style={styles.container}>
         <Text>Geolocation: {JSON.stringify(this.props.geolocation)}</Text>
+        <TextInput style={styles.speedInput} keyboardType="numeric"></TextInput>
       </View>
     )
   }
