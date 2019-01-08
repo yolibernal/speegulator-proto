@@ -1,5 +1,5 @@
 
-export const UPDATE_DISPLAY_TYPE = 'UPDATE_DISPLAY_TYPE'
+export const CHANGE_DISPLAY_TYPE = 'CHANGE_DISPLAY_TYPE'
 
 export enum DisplayType {
   DeviceVibration = 'DEVICE_VIBRATION',
@@ -7,7 +7,7 @@ export enum DisplayType {
   Haptic = 'HAPTIC'
 }
 
-export const updateDisplayType = (displayType: DisplayType) => ({
-  type: UPDATE_DISPLAY_TYPE,
+export const changeDisplayType = (displayType: DisplayType) => ({
+  type: CHANGE_DISPLAY_TYPE,
   displayType
 })

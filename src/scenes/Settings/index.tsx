@@ -3,14 +3,15 @@ import React from 'react'
 import { View, Text } from 'react-native'
 import { ListItem, ButtonGroup } from 'react-native-elements'
 import styles from './styles'
-import { updateDisplayType, DisplayType } from '../../actions/settings'
+import { changeDisplayType, DisplayType } from '../../actions/settings'
 import { StateType } from '../..//reducers'
 
 type Props = {
   // TODO: redux action (creator) type
-  updateDisplayType,
+  changeDisplayType,
   displayType
 }
+
 type ComponentState = {
   displayType: {
     selectedIndex: number
@@ -70,10 +71,10 @@ class Settings extends React.Component<Props, ComponentState> {
       }
     })
     const newDisplayType = Settings.indexToDisplayType[selectedIndex]
-    this.props.updateDisplayType(newDisplayType)
+    this.props.changeDisplayType(newDisplayType)
   }
 }
 
 const mapStateToProps = (state: StateType) => ({ displayType: state.settings.displayType })
 
-export default connect(mapStateToProps, { updateDisplayType })(Settings)
+export default connect(mapStateToProps, { changeDisplayType })(Settings)

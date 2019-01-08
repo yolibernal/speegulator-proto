@@ -1,4 +1,4 @@
-import { UPDATE_DISPLAY_TYPE, DisplayType } from '../actions/settings'
+import { CHANGE_DISPLAY_TYPE, DisplayType } from '../actions/settings'
 import { DeviceVibrationDisplay } from '../services/display/DeviceVibrationDisplay'
 import configs from '../../configs'
 import { VoiceCommandDisplay } from '../services/display/VoiceCommandDisplay'
@@ -28,7 +28,7 @@ const initialState: Settings = {
 
 const settings = (state = initialState, action): Settings => {
   switch (action.type) {
-    case UPDATE_DISPLAY_TYPE:
+    case CHANGE_DISPLAY_TYPE:
       const display = createDisplayForType(action.displayType)
       return { ...state, displayType: action.displayType, display }
     default:
