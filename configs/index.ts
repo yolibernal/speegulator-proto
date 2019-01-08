@@ -9,7 +9,8 @@ const voiceCommandDisplay = {
   commands: {
     increase: 'Increase speed, Mothertrucker',
     decrease: 'Slow down, Cowboy!'
-  }
+  },
+  duckingEnabled: true
 }
 
 const configs = {

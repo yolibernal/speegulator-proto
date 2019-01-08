@@ -3,16 +3,16 @@ import Tts from 'react-native-tts'
 
 export class VoiceCommandDisplay implements Display {
 
-  constructor(private commands: { increase: string, decrease: string }, duckingEnabled: boolean) {
-    Tts.setDucking(duckingEnabled)
+  constructor(private options: {commands: { increase: string, decrease: string }, duckingEnabled: boolean}) {
+    Tts.setDucking(options.duckingEnabled)
   }
 
   async displayDecreaseSpeed(): Promise<void> {
-    await Tts.speak(this.commands.decrease)
+    await Tts.speak(this.options.commands.decrease)
   }
 
   async displayIncreaseSpeed(): Promise<void> {
-    await Tts.speak(this.commands.increase)
+    await Tts.speak(this.options.commands.increase)
   }
 
 }

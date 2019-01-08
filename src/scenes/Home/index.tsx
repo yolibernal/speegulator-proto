@@ -6,12 +6,14 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 import styles from './styles'
 import { StateType } from '../../reducers'
 import { DisplayType } from '../../actions/settings'
+import { Display } from '../../services/display/Display'
 
 interface Props {
   geolocation: GeolocationReturnType | {},
   displayType: DisplayType
   // TODO: type
-  navigation: any
+  navigation: any,
+  display: Display
 }
 class Home extends Component<Props, {}> {
   static navigationOptions = ({ navigation }) => ({
@@ -42,11 +44,13 @@ class Home extends Component<Props, {}> {
         <Text>Geolocation: {JSON.stringify(this.props.geolocation)}</Text>
         <Text>Display type: {this.props.displayType}</Text>
         <TextInput style={styles.speedInput} keyboardType="numeric"></TextInput>
+        <Button title="Decrease speed" onPress={() => this.props.display.displayDecreaseSpeed()} />
+        <Button title="Increase speed" onPress={() => this.props.display.displayIncreaseSpeed()} />
       </View>
     )
   }
 }
 
-const mapStateToProps = (state: StateType) => ({ geolocation: state.geolocation, displayType: state.settings.displayType })
+const mapStateToProps = (state: StateType) => ({ geolocation: state.geolocation, displayType: state.settings.displayType, display: state.settings.display })
 
 export default connect(mapStateToProps)(Home)
