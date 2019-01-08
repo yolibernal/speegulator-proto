@@ -14,7 +14,11 @@ export default StyleSheet.create({
     borderWidth: 1
   },
   settingsButton: {
-    paddingHorizontal: 10,
-    marginHorizontal: 5
+    backgroundColor: 'rgba(92, 99,216, 1)',
+    paddingHorizontal: 5,
+    marginHorizontal: 10,
+    borderColor: 'transparent',
+    borderWidth: 0,
+    borderRadius: 5
   }
 })

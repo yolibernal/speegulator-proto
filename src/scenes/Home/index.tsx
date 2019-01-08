@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Text, View, TextInput, GeolocationReturnType } from 'react-native'
 import { Button } from 'react-native-elements'
-import Icon from 'react-native-vector-icons/Feather'
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 import styles from './styles'
 import { StateType } from '../../reducers'
 
@@ -16,11 +16,11 @@ class Home extends Component<Props, {}> {
     title: 'Speegulator Prototype',
     headerRight: (
       <Button
-        title="Settings"
+        title=""
         icon={
           <Icon
             name="settings"
-            size={15}
+            size={30}
             color="white"
           />
         }
