@@ -6,11 +6,13 @@ import { Provider } from 'react-redux'
 import { createStore } from 'redux'
 import { GeolocationService } from './services/GeolocationService'
 import rootReducer from './reducers'
+import Settings from './scenes/Settings'
 
 const store = createStore(rootReducer)
 
 const AppNavigator = createStackNavigator({
-  Home: { screen: Home }
+  Home: { screen: Home },
+  Settings: { screen: Settings }
 })
 
 const AppContainer = createAppContainer(AppNavigator)

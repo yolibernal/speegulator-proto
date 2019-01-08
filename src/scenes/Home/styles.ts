@@ -12,5 +12,9 @@ export default StyleSheet.create({
     width: 200,
     borderColor: 'gray',
     borderWidth: 1
+  },
+  settingsButton: {
+    paddingHorizontal: 10,
+    marginHorizontal: 5
   }
 })
