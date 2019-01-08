@@ -5,9 +5,11 @@ import { Button } from 'react-native-elements'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 import styles from './styles'
 import { StateType } from '../../reducers'
+import { DisplayType } from '../../actions/settings'
 
 interface Props {
   geolocation: GeolocationReturnType | {},
+  displayType: DisplayType
   // TODO: type
   navigation: any
 }
@@ -38,12 +40,13 @@ class Home extends Component<Props, {}> {
     return (
       <View style={styles.container}>
         <Text>Geolocation: {JSON.stringify(this.props.geolocation)}</Text>
+        <Text>Display type: {this.props.displayType}</Text>
         <TextInput style={styles.speedInput} keyboardType="numeric"></TextInput>
       </View>
     )
   }
 }
 
-const mapStateToProps = (state: StateType) => ({ geolocation: state.geolocation })
+const mapStateToProps = (state: StateType) => ({ geolocation: state.geolocation, displayType: state.settings.displayType })
 
 export default connect(mapStateToProps)(Home)
