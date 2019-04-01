@@ -1,18 +1,34 @@
-import pino from 'pino'
-import { Store } from 'redux'
-import { updateGeolocation } from '../actions/geolocation'
-import Logger from '../Logger'
+import React from 'react'
+import { connect } from 'react-redux'
 
-class GeolocationService {
+import pino from 'pino'
+import { updateGeolocation } from '../../actions/geolocation'
+import Logger from '../../Logger'
+
+type Props = {
+  updateGeolocation
+}
+
+type ComponentState = {}
+class GeolocationService extends React.Component<Props, ComponentState> {
 
   private logger: pino.Logger
 
-  constructor(private store: Store) {
+  constructor(props) {
+    super(props)
     this.logger = Logger.getLoggerForClass(this)
   }
 
-  watchPosition() {
-    // optional: get initial position
+  render() {
+    return null
+  }
+
+  componentDidMount() {
+    this.startWatchPosition()
+  }
+
+  startWatchPosition(): void {
+    // optional: get initial position, TODO: check if needed
     navigator.geolocation.getCurrentPosition(
       (position) => {
         this.handlePositionUpdate(position)
@@ -37,7 +53,7 @@ class GeolocationService {
         this.handlePositionError(error)
       },
       {
-        // true does not work on emulator (no GPS available)
+        // "true" does not work on emulator (no GPS available)
         enableHighAccuracy: true,
         distanceFilter: 0
       }
@@ -45,7 +61,7 @@ class GeolocationService {
   }
 
   handlePositionUpdate(position) {
-    this.store.dispatch(updateGeolocation(position))
+    this.props.updateGeolocation(position)
   }
 
   handlePositionError(error) {
@@ -53,4 +69,8 @@ class GeolocationService {
   }
 }
 
-export { GeolocationService }
+const mapDispatchToProps = {
+  updateGeolocation
+}
+
+export default connect(null, mapDispatchToProps)(GeolocationService)
