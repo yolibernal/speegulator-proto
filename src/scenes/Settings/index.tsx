@@ -1,15 +1,20 @@
 import { connect } from 'react-redux'
 import React from 'react'
-import { View, Text } from 'react-native'
+import { View, Text, FlatList, Button } from 'react-native'
 import { ListItem, ButtonGroup } from 'react-native-elements'
 import styles from './styles'
 import { changeDisplayType, DisplayType } from '../../actions/settings'
-import { StateType } from '../..//reducers'
+import { StateType } from '../../reducers'
+import { selectDevice } from '../../actions/bluetooth'
+// TODO: convert services to renderless components? https://kyleshevlin.com/renderless-components
 
 type Props = {
   // TODO: redux action (creator) type
   changeDisplayType,
-  displayType
+  selectDevice,
+  displayType,
+  devices,
+  selectedDevice
 }
 
 type ComponentState = {
@@ -60,6 +65,8 @@ class Settings extends React.Component<Props, ComponentState> {
             textStyle: styles.displayTypeText
           }}
         />
+        <FlatList data={this.props.devices} renderItem={({ item }: { item: any }) => <Button key={item.id} title={item.name || 'Unnamed device'} onPress={() => this.props.selectDevice(item.id)}/>} />
+        <Text>Selected device id {this.props.selectedDevice}</Text>
       </View>
     )
   }
@@ -75,6 +82,6 @@ class Settings extends React.Component<Props, ComponentState> {
   }
 }
 
-const mapStateToProps = (state: StateType) => ({ displayType: state.settings.displayType })
+const mapStateToProps = (state: StateType) => ({ displayType: state.settings.displayType, devices: state.bluetooth.devices, selectedDevice: state.bluetooth.selectedDevice })
 
-export default connect(mapStateToProps, { changeDisplayType })(Settings)
+export default connect(mapStateToProps, { changeDisplayType, selectDevice })(Settings)
