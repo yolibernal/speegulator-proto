@@ -1,10 +1,14 @@
+import pino from 'pino'
 import { Store } from 'redux'
 import { updateGeolocation } from '../actions/geolocation'
+import Logger from '../Logger'
 
 class GeolocationService {
 
-  constructor(private store: Store) {
+  private logger: pino.Logger
 
+  constructor(private store: Store) {
+    this.logger = Logger.getLoggerForClass(this)
   }
 
   watchPosition() {
@@ -45,7 +49,7 @@ class GeolocationService {
   }
 
   handlePositionError(error) {
-    console.warn(error)
+    this.logger.warn(error)
   }
 }
 

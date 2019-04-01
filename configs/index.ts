@@ -1,3 +1,5 @@
+const name = 'speegulator-proto'
+
 const vibrationDisplay = {
   patterns: {
     increase: [0, 1000, 0, 2000],
@@ -13,7 +15,13 @@ const voiceCommandDisplay = {
   duckingEnabled: true
 }
 
+const loggerOptions = {
+  level: 'debug'
+}
+
 const configs = {
+  name,
+  loggerOptions,
   display: {
     vibrationDisplay,
     voiceCommandDisplay

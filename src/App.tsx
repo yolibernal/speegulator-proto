@@ -1,5 +1,7 @@
 import { createStackNavigator, createAppContainer } from 'react-navigation'
 
+import Logger from './Logger'
+
 import Home from './scenes/Home'
 import React from 'react'
 import { Provider } from 'react-redux'
