@@ -3,7 +3,6 @@ import { connect } from 'react-redux'
 
 import pino from 'pino'
 import { updateGeolocation } from '../../actions/geolocation'
-import Logger from '../../Logger'
 
 type Props = {
   updateGeolocation
@@ -12,11 +11,8 @@ type Props = {
 type ComponentState = {}
 class GeolocationService extends React.Component<Props, ComponentState> {
 
-  private logger: pino.Logger
-
   constructor(props) {
     super(props)
-    this.logger = Logger.getLoggerForClass(this)
   }
 
   render() {
@@ -65,7 +61,7 @@ class GeolocationService extends React.Component<Props, ComponentState> {
   }
 
   handlePositionError(error) {
-    this.logger.warn(error)
+    console.warn(error)
   }
 }
 

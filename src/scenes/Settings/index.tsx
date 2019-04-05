@@ -25,7 +25,7 @@ type ComponentState = {
 
 class Settings extends React.Component<Props, ComponentState> {
   static navigationOptions = {
-    title: 'Settings',
+    title: 'Settings'
   }
 
   // TODO: combine with displayTypeButtons and map over

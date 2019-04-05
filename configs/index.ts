@@ -1,3 +1,5 @@
+import * as secrets from './secrets.json'
+
 const name = 'speegulator-proto'
 
 const vibrationDisplay = {
@@ -15,13 +17,11 @@ const voiceCommandDisplay = {
   duckingEnabled: true
 }
 
-const loggerOptions = {
-  level: 'debug'
-}
-
 const configs = {
   name,
-  loggerOptions,
+  mapbox: {
+    accessToken: secrets.mapbox.accessToken
+  },
   display: {
     vibrationDisplay,
     voiceCommandDisplay

@@ -32,6 +32,20 @@ class Home extends Component<Props, {}> {
         buttonStyle={styles.settingsButton}
       />
     ),
+    headerLeft: (
+      <Button
+        title=""
+        icon={
+          <Icon
+            name="map"
+            size={30}
+            color="white"
+          />
+        }
+        onPress={() => navigation.navigate('RouteMap')}
+        buttonStyle={styles.settingsButton}
+      />
+    )
   })
 
   constructor(props: Props) {
