@@ -3,6 +3,8 @@ import React from 'react'
 import MapboxGL from '@mapbox/react-native-mapbox-gl'
 import { View, Text } from 'react-native'
 import styles from './styles'
+import { Button } from 'react-native-elements'
+import { selectRoute } from '../../actions/maps'
 /*
 event example
 {
@@ -17,6 +19,8 @@ event example
 */
 
 type Props = {
+  navigation,
+  selectRoute
 }
 
 type ComponentState = {
@@ -51,6 +55,7 @@ class RouteMap extends React.Component<Props, ComponentState> {
             Selected waypoints:
             {this.state.selectedWaypoints}
           </Text>
+          <Button title="Select Route" onPress={() => this.handleSelectRoute()} />
         </View>
       </View>
     )
@@ -62,6 +67,16 @@ class RouteMap extends React.Component<Props, ComponentState> {
       selectedWaypoints: [...state.selectedWaypoints, waypointCoordinates]
     }))
   }
+
+  handleSelectRoute() {
+    const selectedWaypoints = this.state.selectedWaypoints
+    this.props.selectRoute(selectedWaypoints)
+    this.setState(() => ({
+      selectedWaypoints: []
+    }))
+    this.props.navigation.navigate('Home')
+  }
 }
 
-export default connect(null, null)(RouteMap)
+const mapDispatchToProps = { selectRoute }
+export default connect(null, mapDispatchToProps)(RouteMap)

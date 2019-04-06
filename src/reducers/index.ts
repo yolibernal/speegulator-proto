@@ -3,11 +3,13 @@ import { combineReducers } from 'redux'
 import geolocation from './geolocation'
 import settings from './settings'
 import bluetooth from './bluetooth'
+import maps from './maps'
 
 const reducers = {
   geolocation,
   settings,
-  bluetooth
+  bluetooth,
+  maps
 }
 
 const rootReducer = combineReducers(reducers)
