@@ -66,6 +66,7 @@ class RouteMap extends React.Component<Props, ComponentState> {
     this.setState(state => ({
       selectedWaypoints: [...state.selectedWaypoints, waypointCoordinates]
     }))
+    // add feature to map, see https://github.com/nitaliano/react-native-mapbox-gl/blob/master/example/src/components/CustomIcon.js
   }
 
   handleSelectRoute() {
