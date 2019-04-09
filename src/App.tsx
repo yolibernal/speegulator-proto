@@ -4,20 +4,28 @@ import configs from '../configs'
 import Home from './scenes/Home'
 import React from 'react'
 import { Provider } from 'react-redux'
-import { createStore } from 'redux'
+import { createStore, applyMiddleware } from 'redux'
 import GeolocationService from './services/geolocation/GeolocationService'
 import rootReducer from './reducers'
 import Settings from './scenes/Settings'
 import RouteMap from './scenes/RouteMap'
+import thunkMiddleware from 'redux-thunk'
 
 import MapboxGL from '@mapbox/react-native-mapbox-gl'
+import RouteNavigation from './scenes/RouteNavigation'
 
-const store = createStore(rootReducer)
+const store = createStore(
+  rootReducer,
+  applyMiddleware(
+    thunkMiddleware
+  )
+)
 
 const AppNavigator = createStackNavigator({
   Home: { screen: Home },
   Settings: { screen: Settings },
-  RouteMap: { screen: RouteMap }
+  RouteMap: { screen: RouteMap },
+  RouteNavigation: { screen: RouteNavigation }
 })
 
 const AppContainer = createAppContainer(AppNavigator)

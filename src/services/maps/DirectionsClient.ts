@@ -10,12 +10,17 @@ export default class DirectionsClient {
     this.mapboxDirectionsClient = new mapboxDirections({ accessToken })
   }
 
-  public async getDirections(waypoints: number[][]) {
+  public async fetchDirections(waypoints: number[][]) {
+    // TODO: query voice instructions when voice display selected: https://github.com/mapbox/mapbox-sdk-js/blob/master/docs/services.md#getdirections
     const { profile } = configs.mapbox.directions
     const directionsWaypoints = waypoints.map(waypoint => ({ coordinates: waypoint }))
     const response = await this.mapboxDirectionsClient
       .getDirections({
         profile,
+        steps: true,
+        bannerInstructions: true,
+        voiceInstructions: true,
+        annotations: ['distance'],
         waypoints: directionsWaypoints
       })
       .send()

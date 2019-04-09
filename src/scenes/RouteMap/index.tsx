@@ -4,7 +4,7 @@ import MapboxGL from '@mapbox/react-native-mapbox-gl'
 import { View, Text } from 'react-native'
 import styles from './styles'
 import { Button } from 'react-native-elements'
-import { selectRoute } from '../../actions/maps'
+import { selectRoute, fetchDirections } from '../../actions/maps'
 /*
 event example
 {
@@ -20,7 +20,8 @@ event example
 
 type Props = {
   navigation,
-  selectRoute
+  selectRoute,
+  fetchDirections
 }
 
 type ComponentState = {
@@ -72,12 +73,13 @@ class RouteMap extends React.Component<Props, ComponentState> {
   handleSelectRoute() {
     const selectedWaypoints = this.state.selectedWaypoints
     this.props.selectRoute(selectedWaypoints)
+    this.props.fetchDirections(selectedWaypoints)
     this.setState(() => ({
       selectedWaypoints: []
     }))
-    this.props.navigation.navigate('Home')
+    this.props.navigation.navigate('RouteNavigation')
   }
 }
 
-const mapDispatchToProps = { selectRoute }
+const mapDispatchToProps = { selectRoute, fetchDirections }
 export default connect(null, mapDispatchToProps)(RouteMap)

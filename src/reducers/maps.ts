@@ -1,9 +1,31 @@
-import { SELECT_ROUTE } from '../actions/maps'
+import { SELECT_ROUTE, REQUEST_DIRECTIONS, RECEIVE_DIRECTIONS } from '../actions/maps'
 
-const maps = (state = {}, action) => {
+const maps = (
+  state = {
+    routeWaypoints: [],
+    isFetching: false,
+    directions: []
+  },
+  action
+) => {
   switch (action.type) {
     case SELECT_ROUTE:
-      return action.routeWaypoints
+      return {
+        ...state,
+        routeWaypoints: action.routeWaypoints
+      }
+    case REQUEST_DIRECTIONS:
+      return {
+        ...state,
+        isFetching: true
+      }
+    case RECEIVE_DIRECTIONS:
+      return {
+        ...state,
+        isFetching: false,
+        directions: action.directions,
+        lastUpdated: action.receivedAt
+      }
     default:
       return state
   }
