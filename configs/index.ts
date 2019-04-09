@@ -20,7 +20,10 @@ const voiceCommandDisplay = {
 const configs = {
   name,
   mapbox: {
-    accessToken: secrets.mapbox.accessToken
+    accessToken: secrets.mapbox.accessToken,
+    directions: {
+      profile: 'walking'
+    }
   },
   display: {
     vibrationDisplay,
