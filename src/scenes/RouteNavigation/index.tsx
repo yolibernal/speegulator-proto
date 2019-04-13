@@ -1,14 +1,26 @@
 import { connect } from 'react-redux'
 import React from 'react'
 import { StateType } from '../../reducers'
-import { Text, ScrollView } from 'react-native'
+import { View } from 'react-native'
+import styles from './styles'
+import MapboxGL from '@mapbox/react-native-mapbox-gl'
 
 type Props = {
   isFetching,
   directions
 }
 
-type ComponentState = {}
+const layerStyles = MapboxGL.StyleSheet.create({
+  route: {
+    lineColor: 'red',
+    lineWidth: 3,
+    lineOpacity: 0.84,
+  }
+})
+
+type ComponentState = {
+  route
+}
 
 class RouteNavigation extends React.Component<Props, ComponentState> {
   static navigationOptions = {
@@ -20,11 +32,27 @@ class RouteNavigation extends React.Component<Props, ComponentState> {
   }
 
   render() {
+    const { directions } = this.props
+    const route = directions ? directions.routes[0] : null
+    const routeShape = route ? route.geometry : null
     return (
-      <ScrollView>
-        <Text>Is fetching: {String(this.props.isFetching)}</Text>
-        <Text>Directions: {JSON.stringify(this.props.directions, null, 2)}</Text>
-      </ScrollView>
+      <View style={styles.container}>
+        <MapboxGL.MapView
+          showUserLocation={true}
+          zoomLevel={12}
+          userTrackingMode={MapboxGL.UserTrackingModes.Follow}
+          styleURL={MapboxGL.StyleURL.Street}
+          style={styles.map}
+        >
+          <MapboxGL.ShapeSource id="routeSource" shape={routeShape}>
+            <MapboxGL.LineLayer
+              id="routeFill"
+              style={layerStyles.route}
+              belowLayerID="originInnerCircle"
+            />
+          </MapboxGL.ShapeSource>
+        </MapboxGL.MapView>
+      </View>
     )
   }
 }

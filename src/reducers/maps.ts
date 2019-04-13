@@ -4,7 +4,7 @@ const maps = (
   state = {
     routeWaypoints: [],
     isFetching: false,
-    directions: []
+    directions: null
   },
   action
 ) => {

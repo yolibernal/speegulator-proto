@@ -17,6 +17,7 @@ export default class DirectionsClient {
     const response = await this.mapboxDirectionsClient
       .getDirections({
         profile,
+        geometries: 'geojson',
         steps: true,
         bannerInstructions: true,
         voiceInstructions: true,
