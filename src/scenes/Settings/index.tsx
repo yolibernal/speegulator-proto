@@ -6,7 +6,7 @@ import styles from './styles'
 import { changeDisplayType, DisplayType } from '../../actions/settings'
 import { StateType } from '../../reducers'
 import { selectDevice } from '../../actions/bluetooth'
-// TODO: convert services to renderless components? https://kyleshevlin.com/renderless-components
+// NOTE: convert services to renderless components? https://kyleshevlin.com/renderless-components
 
 type Props = {
   // TODO: redux action (creator) type

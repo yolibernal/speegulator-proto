@@ -1,10 +1,16 @@
-import { SELECT_ROUTE, REQUEST_DIRECTIONS, RECEIVE_DIRECTIONS } from '../actions/maps'
+import { SELECT_ROUTE, REQUEST_DIRECTIONS, RECEIVE_DIRECTIONS, START_NEXT_NAVIGATION_STEP } from '../actions/maps'
 
 const maps = (
   state = {
     routeWaypoints: [],
-    isFetching: false,
-    directions: null
+    directions: {
+      route: null,
+      routeGeometry: null,
+      navigationSteps: [],
+      lastUpdated: null,
+      currentNavigationStepIndex: 0,
+      isFetching: false
+    }
   },
   action
 ) => {
@@ -17,14 +23,44 @@ const maps = (
     case REQUEST_DIRECTIONS:
       return {
         ...state,
-        isFetching: true
+        directions: {
+          ...state.directions,
+          isFetching: true
+        }
       }
     case RECEIVE_DIRECTIONS:
+      const { directions: mapboxDirections, receivedAt: lastUpdated } = action
+      const route = mapboxDirections.routes[0]
+      const routeGeometry = route ? route.geometry : null
+
+      const navigationSteps = route.legs.reduce(
+        (result, leg) => {
+          const { steps: legSteps } = leg
+          return result.concat(legSteps)
+        },
+        []
+      )
+      const directions = {
+        route,
+        routeGeometry,
+        navigationSteps,
+        lastUpdated,
+        currentNavigationStepIndex: 0,
+        isFetching: false
+      }
       return {
         ...state,
-        isFetching: false,
-        directions: action.directions,
-        lastUpdated: action.receivedAt
+        directions
+      }
+    case START_NEXT_NAVIGATION_STEP:
+      const { currentNavigationStepIndex } = state.directions
+      const nextNavigationStepIndex = currentNavigationStepIndex + 1
+      return {
+        ...state,
+        directions: {
+          ...state.directions,
+          currentNavigationStepIndex: nextNavigationStepIndex
+        }
       }
     default:
       return state

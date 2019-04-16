@@ -1,7 +1,7 @@
 import { UPDATE_GEOLOCATION } from '../actions/geolocation'
 import { GeolocationReturnType } from 'react-native'
 
-const geolocation = (state = {}, action): (GeolocationReturnType | {}) => {
+const geolocation = (state = null, action): GeolocationReturnType | null => {
   switch (action.type) {
     case UPDATE_GEOLOCATION:
       return action.geolocation

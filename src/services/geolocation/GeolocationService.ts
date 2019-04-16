@@ -49,8 +49,8 @@ class GeolocationService extends React.Component<Props, ComponentState> {
         this.handlePositionError(error)
       },
       {
-        // "true" does not work on emulator (no GPS available)
-        enableHighAccuracy: true,
+        // NOTE: "true" does not work on emulator (no GPS available)
+        enableHighAccuracy: false,
         distanceFilter: 0
       }
     )

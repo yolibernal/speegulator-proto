@@ -20,6 +20,11 @@ export const receiveDirections = directions => ({
   receivedAt: Date.now()
 })
 
+export const START_NEXT_NAVIGATION_STEP = 'START_NEXT_NAVIGATION_STEP'
+export const startNextNavigationStep = () => ({
+  type: START_NEXT_NAVIGATION_STEP
+})
+
 export const fetchDirections = routeWaypoints => async (dispatch) => {
   dispatch(requestDirections(routeWaypoints))
   const directions = await directionsClient.fetchDirections(routeWaypoints)

@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import { NavigationScreenOptions, NavigationScreenProps } from 'react-navigation'
 import { connect } from 'react-redux'
 import { Text, View, TextInput, GeolocationReturnType } from 'react-native'
 import { Button } from 'react-native-elements'
@@ -16,7 +17,7 @@ interface Props {
   display: Display
 }
 class Home extends Component<Props, {}> {
-  static navigationOptions = ({ navigation }) => ({
+  static navigationOptions = ({ navigation }: NavigationScreenProps): NavigationScreenOptions => ({
     title: 'Speegulator Prototype',
     headerRight: (
       <Button

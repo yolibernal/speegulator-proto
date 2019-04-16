@@ -1,3 +1,4 @@
+// NOTE: no types yet, see https://github.com/mapbox/mapbox-sdk-js/issues/213
 import mapboxDirections from '@mapbox/mapbox-sdk/services/directions'
 import configs from '../../../configs'
 

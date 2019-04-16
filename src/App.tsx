@@ -1,4 +1,5 @@
 import { createStackNavigator, createAppContainer } from 'react-navigation'
+import { composeWithDevTools } from 'redux-devtools-extension/developmentOnly'
 import configs from '../configs'
 
 import Home from './scenes/Home'
@@ -14,11 +15,14 @@ import thunkMiddleware from 'redux-thunk'
 import MapboxGL from '@mapbox/react-native-mapbox-gl'
 import RouteNavigation from './scenes/RouteNavigation'
 
+const middlewares = [
+  thunkMiddleware
+]
+const enhancer = composeWithDevTools({})(applyMiddleware(...middlewares))
+
 const store = createStore(
   rootReducer,
-  applyMiddleware(
-    thunkMiddleware
-  )
+  enhancer
 )
 
 const AppNavigator = createStackNavigator({
