@@ -8,9 +8,10 @@ import styles from './styles'
 import { StateType } from '../../reducers'
 import { DisplayType } from '../../actions/settings'
 import { Display } from '../../services/display/Display'
+import { GeolocationState } from '../../reducers/geolocation'
 
 interface Props {
-  geolocation: GeolocationReturnType | {},
+  geolocation: GeolocationState,
   displayType: DisplayType
   // TODO: type
   navigation: any,
