@@ -25,6 +25,9 @@ const configs = {
       profile: 'walking'
     }
   },
+  maps: {
+    nextStepDistanceThreshold: 0.05
+  },
   display: {
     vibrationDisplay,
     voiceCommandDisplay
