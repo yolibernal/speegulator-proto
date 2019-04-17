@@ -1,7 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
 
-import pino from 'pino'
 import { updateGeolocation } from '../../actions/geolocation'
 
 type Props = {
