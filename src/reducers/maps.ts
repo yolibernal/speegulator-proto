@@ -1,4 +1,4 @@
-import { SELECT_ROUTE, REQUEST_DIRECTIONS, RECEIVE_DIRECTIONS, START_NEXT_NAVIGATION_STEP } from '../actions/maps'
+import { SELECT_ROUTE, REQUEST_DIRECTIONS, RECEIVE_DIRECTIONS, START_NEXT_NAVIGATION_STEP, REQUEST_DIRECTIONS_FAILED } from '../actions/maps'
 
 const maps = (
   state = {
@@ -51,6 +51,14 @@ const maps = (
       return {
         ...state,
         directions
+      }
+    case REQUEST_DIRECTIONS_FAILED:
+      return {
+        ...state,
+        directions: {
+          ...state.directions,
+          isFetching: false
+        }
       }
     case START_NEXT_NAVIGATION_STEP:
       const { currentNavigationStepIndex } = state.directions

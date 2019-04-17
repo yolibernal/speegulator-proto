@@ -20,13 +20,23 @@ export const receiveDirections = directions => ({
   receivedAt: Date.now()
 })
 
+export const REQUEST_DIRECTIONS_FAILED = 'REQUEST_DIRECTIONS_FAILED'
+export const requestDirectionsFailed = () => ({
+  type: REQUEST_DIRECTIONS_FAILED,
+  receivedAt: Date.now()
+})
+
 export const START_NEXT_NAVIGATION_STEP = 'START_NEXT_NAVIGATION_STEP'
 export const startNextNavigationStep = () => ({
   type: START_NEXT_NAVIGATION_STEP
 })
 
 export const fetchDirections = routeWaypoints => async (dispatch) => {
-  dispatch(requestDirections(routeWaypoints))
-  const directions = await directionsClient.fetchDirections(routeWaypoints)
-  dispatch(receiveDirections(directions))
+  try {
+    dispatch(requestDirections(routeWaypoints))
+    const directions = await directionsClient.fetchDirections(routeWaypoints)
+    dispatch(receiveDirections(directions))
+  } catch (error) {
+    dispatch(requestDirectionsFailed())
+  }
 }
