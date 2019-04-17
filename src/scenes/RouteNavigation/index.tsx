@@ -27,15 +27,23 @@ const layerStyles = MapboxGL.StyleSheet.create({
   }
 })
 
-type ComponentState = {}
+type ComponentState = {
+  distanceToNextManeuver: number,
+  nextManeuverType: string
+}
 
-class RouteNavigation extends React.Component<Props, ComponentState> {
+class RouteNavigation extends React.PureComponent<Props, ComponentState> {
   static navigationOptions = {
     title: 'RouteNavigation'
   }
 
   constructor(props) {
     super(props)
+
+    this.state = {
+      distanceToNextManeuver: 9999,
+      nextManeuverType: 'NONE'
+    }
   }
 
   render() {
@@ -45,14 +53,10 @@ class RouteNavigation extends React.Component<Props, ComponentState> {
     const { route, routeGeometry } = this.props
     if (!route) return this.renderNoRoute()
 
-    const { currentPosition, currentNavigationStep } = this.props
-    const distanceToNextManeuver = this.calculateDistanceToNextManeuver(currentPosition, currentNavigationStep)
-    const nextManeuverType = currentNavigationStep.maneuver.type
-
     return (
       <View style={styles.container}>
         <View style={styles.banner}>
-          <NavigationBanner distanceToNextManeuver={distanceToNextManeuver} maneuverType={nextManeuverType} />
+          <NavigationBanner distanceToNextManeuver={this.state.distanceToNextManeuver} maneuverType={this.state.nextManeuverType} />
         </View>
         <MapboxGL.MapView
           showUserLocation={true}
@@ -90,31 +94,34 @@ class RouteNavigation extends React.Component<Props, ComponentState> {
   }
 
   componentDidMount() {
-    this.startNextStepWhenNearStepLocation()
+    this.handleManuever()
   }
 
   componentDidUpdate() {
-    this.startNextStepWhenNearStepLocation()
+    this.handleManuever()
+  }
+
+  handleManuever() {
+    const { currentPosition, currentNavigationStep } = this.props
+    if (!currentPosition || !currentNavigationStep) return
+
+    const distanceToNextManeuver = this.calculateDistanceToNextManeuver(currentPosition, currentNavigationStep)
+    const nextManeuverType = currentNavigationStep.maneuver.type
+    this.setState({
+      distanceToNextManeuver,
+      nextManeuverType
+    })
+    if (distanceToNextManeuver < configs.maps.nextStepDistanceThreshold) {
+      this.props.startNextNavigationStep()
+    }
   }
 
   private calculateDistanceToNextManeuver(currentPosition, currentNavigationStep) {
     const { maneuver } = currentNavigationStep
-
-    let distanceToNextManeuver
-
     const [maneuverLongitude, maneuverLatitude] = maneuver.location
-    distanceToNextManeuver = GeoUtils.calculateDistance(currentPosition, { longitude: maneuverLongitude, latitude: maneuverLatitude })
+    const distanceToNextManeuver = GeoUtils.calculateDistance(currentPosition, { longitude: maneuverLongitude, latitude: maneuverLatitude })
 
     return distanceToNextManeuver
-  }
-
-  private startNextStepWhenNearStepLocation() {
-    // TODO: distanceToNextManeuver to state? (maybe as PureComponent), see https://reactjs.org/blog/2018/06/07/you-probably-dont-need-derived-state.html#what-about-memoization
-    const { currentPosition, currentNavigationStep } = this.props
-    const distanceToNextManeuver = this.calculateDistanceToNextManeuver(currentPosition, currentNavigationStep)
-    if (distanceToNextManeuver < configs.maps.nextStepDistanceThreshold) {
-      this.props.startNextNavigationStep()
-    }
   }
 }
 
