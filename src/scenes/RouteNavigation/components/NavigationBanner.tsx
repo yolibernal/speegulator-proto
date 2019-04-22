@@ -15,7 +15,7 @@ type Props = {
 
 type ComponentState = {}
 
-class NavigationBanner extends React.Component<Props, ComponentState> {
+class NavigationBanner extends React.PureComponent<Props, ComponentState> {
   static navigationOptions = {
     title: 'NavigationBanner'
   }

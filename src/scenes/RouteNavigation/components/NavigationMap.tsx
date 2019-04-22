@@ -6,7 +6,8 @@ import { StateType } from '../../../reducers'
 import styles from '../styles'
 
 type Props = {
-  routeGeometry
+  routeGeometry,
+  currentRoutePosition
 }
 
 type ComponentState = {}
@@ -15,11 +16,20 @@ const layerStyles = MapboxGL.StyleSheet.create({
   route: {
     lineColor: 'red',
     lineWidth: 3,
-    lineOpacity: 0.84,
+    lineOpacity: 0.84
   }
 })
 
-class NavigationMap extends React.Component<Props, ComponentState> {
+const mglStyles = MapboxGL.StyleSheet.create({
+  routePositionCircle: {
+    circleRadius: 5,
+    circleColor: 'black',
+    circleStrokeWidth: 1,
+    circleStrokeColor: '#c6d2e1'
+  }
+})
+
+class NavigationMap extends React.PureComponent<Props, ComponentState> {
 
   constructor(props) {
     super(props)
@@ -42,7 +52,25 @@ class NavigationMap extends React.Component<Props, ComponentState> {
             belowLayerID="originInnerCircle"
           />
         </MapboxGL.ShapeSource>
+
+        {this.renderRoutePosition()}
       </MapboxGL.MapView>
+    )
+  }
+
+  renderRoutePosition() {
+    const { currentRoutePosition } = this.props
+
+    return (
+      <MapboxGL.ShapeSource
+        shape={currentRoutePosition}
+        id="currentRoutePositionSource"
+      >
+        <MapboxGL.CircleLayer
+          id="currentRoutePositionCircle"
+          style={mglStyles.routePositionCircle}
+        />
+      </MapboxGL.ShapeSource>
     )
   }
 }

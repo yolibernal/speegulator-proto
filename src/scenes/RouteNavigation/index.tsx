@@ -9,6 +9,9 @@ import configs from '../../../configs'
 import { startNextNavigationStep } from '../../actions/maps'
 import Position from '../../services/geolocation/Position'
 import NavigationMap from './components/NavigationMap'
+import * as turfHelpers from '@turf/helpers'
+import nearestPointOnLine from '@turf/nearest-point-on-line'
+import turfEqual from '@turf/boolean-equal'
 
 type Props = {
   isFetching,
@@ -21,7 +24,8 @@ type Props = {
 
 type ComponentState = {
   distanceToNextManeuver: number,
-  nextManeuverType: string
+  nextManeuverType: string,
+  currentRoutePosition
 }
 
 class RouteNavigation extends React.PureComponent<Props, ComponentState> {
@@ -34,7 +38,8 @@ class RouteNavigation extends React.PureComponent<Props, ComponentState> {
 
     this.state = {
       distanceToNextManeuver: 9999,
-      nextManeuverType: 'NONE'
+      nextManeuverType: 'NONE',
+      currentRoutePosition: null
     }
   }
 
@@ -45,12 +50,14 @@ class RouteNavigation extends React.PureComponent<Props, ComponentState> {
     const { route, routeGeometry } = this.props
     if (!route) return this.renderNoRoute()
 
+    const { distanceToNextManeuver, nextManeuverType, currentRoutePosition } = this.state
+
     return (
       <View style={styles.container}>
         <View style={styles.banner}>
-          <NavigationBanner distanceToNextManeuver={this.state.distanceToNextManeuver} maneuverType={this.state.nextManeuverType} />
+          <NavigationBanner distanceToNextManeuver={distanceToNextManeuver} maneuverType={nextManeuverType} />
         </View>
-        <NavigationMap routeGeometry={routeGeometry}/>
+        <NavigationMap currentRoutePosition={currentRoutePosition} routeGeometry={routeGeometry} />
       </View>
     )
   }
@@ -73,10 +80,12 @@ class RouteNavigation extends React.PureComponent<Props, ComponentState> {
 
   componentDidMount() {
     this.handleManuever()
+    this.calculateCurrentPointOnRoute()
   }
 
-  componentDidUpdate() {
+  componentDidUpdate(prevProps: Props) {
     this.handleManuever()
+    this.calculateCurrentPointOnRoute()
   }
 
   handleManuever() {
@@ -92,6 +101,24 @@ class RouteNavigation extends React.PureComponent<Props, ComponentState> {
     if (distanceToNextManeuver < configs.maps.nextStepDistanceThreshold) {
       this.props.startNextNavigationStep()
     }
+  }
+
+  calculateCurrentPointOnRoute() {
+    const { currentPosition, routeGeometry } = this.props
+    if (!currentPosition || !routeGeometry) return
+
+    const { longitude, latitude } = currentPosition
+    // TODO: convert points/lines in state/actions etc. to GeoJSON
+    const currentPositionFeature = turfHelpers.feature({
+      type: 'Point',
+      coordinates: [longitude, latitude]
+    })
+
+    const currentRoutePosition = nearestPointOnLine(routeGeometry, currentPositionFeature)
+    if (this.state.currentRoutePosition && turfEqual(currentRoutePosition, this.state.currentRoutePosition)) return
+    this.setState({
+      currentRoutePosition
+    })
   }
 
   private calculateDistanceToNextManeuver(currentPosition, currentNavigationStep) {
