@@ -12,6 +12,8 @@ import NavigationMap from './components/NavigationMap'
 import * as turfHelpers from '@turf/helpers'
 import nearestPointOnLine from '@turf/nearest-point-on-line'
 import turfEqual from '@turf/boolean-equal'
+import lineSlice from '@turf/line-slice'
+import * as turfInvariant from '@turf/invariant'
 
 type Props = {
   isFetching,
@@ -25,7 +27,8 @@ type Props = {
 type ComponentState = {
   distanceToNextManeuver: number,
   nextManeuverType: string,
-  currentRoutePosition
+  currentRoutePosition,
+  progressGeometry
 }
 
 class RouteNavigation extends React.PureComponent<Props, ComponentState> {
@@ -39,7 +42,8 @@ class RouteNavigation extends React.PureComponent<Props, ComponentState> {
     this.state = {
       distanceToNextManeuver: 9999,
       nextManeuverType: 'NONE',
-      currentRoutePosition: null
+      currentRoutePosition: null,
+      progressGeometry: null
     }
   }
 
@@ -50,14 +54,14 @@ class RouteNavigation extends React.PureComponent<Props, ComponentState> {
     const { route, routeGeometry } = this.props
     if (!route) return this.renderNoRoute()
 
-    const { distanceToNextManeuver, nextManeuverType, currentRoutePosition } = this.state
+    const { distanceToNextManeuver, nextManeuverType, currentRoutePosition, progressGeometry } = this.state
 
     return (
       <View style={styles.container}>
         <View style={styles.banner}>
           <NavigationBanner distanceToNextManeuver={distanceToNextManeuver} maneuverType={nextManeuverType} />
         </View>
-        <NavigationMap currentRoutePosition={currentRoutePosition} routeGeometry={routeGeometry} />
+        <NavigationMap currentRoutePosition={currentRoutePosition} routeGeometry={routeGeometry} progressGeometry={progressGeometry} />
       </View>
     )
   }
@@ -80,12 +84,12 @@ class RouteNavigation extends React.PureComponent<Props, ComponentState> {
 
   componentDidMount() {
     this.handleManuever()
-    this.calculateCurrentPointOnRoute()
+    this.calculateProgress()
   }
 
   componentDidUpdate(prevProps: Props) {
     this.handleManuever()
-    this.calculateCurrentPointOnRoute()
+    this.calculateProgress()
   }
 
   handleManuever() {
@@ -103,21 +107,23 @@ class RouteNavigation extends React.PureComponent<Props, ComponentState> {
     }
   }
 
-  calculateCurrentPointOnRoute() {
+  calculateProgress() {
     const { currentPosition, routeGeometry } = this.props
     if (!currentPosition || !routeGeometry) return
 
     const { longitude, latitude } = currentPosition
     // TODO: convert points/lines in state/actions etc. to GeoJSON
-    const currentPositionFeature = turfHelpers.feature({
-      type: 'Point',
-      coordinates: [longitude, latitude]
-    })
+    const currentPositionGeoJson = turfHelpers.point([longitude, latitude])
 
-    const currentRoutePosition = nearestPointOnLine(routeGeometry, currentPositionFeature)
+    const currentRoutePosition = nearestPointOnLine(routeGeometry, currentPositionGeoJson)
     if (this.state.currentRoutePosition && turfEqual(currentRoutePosition, this.state.currentRoutePosition)) return
+    const routeCoords = turfInvariant.getCoords(this.props.routeGeometry)
+    const startingPoint = turfHelpers.point(routeCoords[0])
+    // TODO: rename after GeoJSON conversion
+    const progressGeometry = lineSlice(startingPoint, currentPositionGeoJson, routeGeometry)
     this.setState({
-      currentRoutePosition
+      currentRoutePosition,
+      progressGeometry
     })
   }
 

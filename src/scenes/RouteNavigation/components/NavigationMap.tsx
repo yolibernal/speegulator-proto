@@ -7,6 +7,7 @@ import styles from '../styles'
 
 type Props = {
   routeGeometry,
+  progressGeometry,
   currentRoutePosition
 }
 
@@ -16,6 +17,11 @@ const layerStyles = MapboxGL.StyleSheet.create({
   route: {
     lineColor: 'red',
     lineWidth: 3,
+    lineOpacity: 0.84
+  },
+  routeProgress: {
+    lineColor: 'blue',
+    lineWidth: 5,
     lineOpacity: 0.84
   }
 })
@@ -36,7 +42,7 @@ class NavigationMap extends React.PureComponent<Props, ComponentState> {
   }
 
   render() {
-    const { routeGeometry } = this.props
+    const { routeGeometry, progressGeometry } = this.props
     return (
       <MapboxGL.MapView
         showUserLocation={true}
@@ -45,21 +51,43 @@ class NavigationMap extends React.PureComponent<Props, ComponentState> {
         styleURL={MapboxGL.StyleURL.Street}
         style={styles.map}
       >
-        <MapboxGL.ShapeSource id="routeSource" shape={routeGeometry}>
-          <MapboxGL.LineLayer
-            id="routeFill"
-            style={layerStyles.route}
-            belowLayerID="originInnerCircle"
-          />
-        </MapboxGL.ShapeSource>
-
+        {this.renderRoute(routeGeometry)}
+        {this.renderRouteProgress(progressGeometry)}
         {this.renderRoutePosition()}
       </MapboxGL.MapView>
     )
   }
 
+  renderRoute(routeGeometry) {
+    if (!routeGeometry) return null
+
+    return (
+      <MapboxGL.ShapeSource id="routeSource" shape={routeGeometry}>
+        <MapboxGL.LineLayer
+          id="routeFill"
+          style={layerStyles.route}
+        />
+      </MapboxGL.ShapeSource>
+    )
+  }
+
+  renderRouteProgress(routeProgressGeometry) {
+    if (!routeProgressGeometry) return null
+
+    return (
+      <MapboxGL.ShapeSource id="routeProgressSource" shape={routeProgressGeometry}>
+        <MapboxGL.LineLayer
+          id="routeProgressFill"
+          style={layerStyles.routeProgress}
+        />
+      </MapboxGL.ShapeSource>
+    )
+  }
+
   renderRoutePosition() {
     const { currentRoutePosition } = this.props
+
+    if (!currentRoutePosition) return null
 
     return (
       <MapboxGL.ShapeSource
