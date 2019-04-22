@@ -5,6 +5,8 @@ import { View, Text } from 'react-native'
 import styles from './styles'
 import { Button } from 'react-native-elements'
 import { selectRoute, fetchDirections } from '../../actions/maps'
+import * as turfHelpers from '@turf/helpers'
+// import locationIcon from '../../assets/location_icon.png'
 /*
 event example
 {
@@ -18,6 +20,17 @@ event example
 }
 */
 
+const mglStyles = MapboxGL.StyleSheet.create({
+  icon: {
+    iconAllowOverlap: true,
+    iconIgnorePlacement: true,
+    iconSize: 1,
+    iconOffset: [0, 5],
+    textField: '{waypointNumber}',
+    textSize: 14
+  }
+})
+
 type Props = {
   navigation,
   selectRoute,
@@ -25,7 +38,9 @@ type Props = {
 }
 
 type ComponentState = {
-  selectedWaypoints: number[][]
+  // TODO: replace selectedWaypoints with feature collection? (features also contain coordinates)
+  selectedWaypoints: number[][],
+  featureCollection: turfHelpers.FeatureCollection
 }
 
 class RouteMap extends React.Component<Props, ComponentState> {
@@ -36,7 +51,8 @@ class RouteMap extends React.Component<Props, ComponentState> {
   constructor(props) {
     super(props)
     this.state = {
-      selectedWaypoints: []
+      selectedWaypoints: [],
+      featureCollection: MapboxGL.geoUtils.makeFeatureCollection()
     }
   }
 
@@ -49,8 +65,21 @@ class RouteMap extends React.Component<Props, ComponentState> {
           userTrackingMode={MapboxGL.UserTrackingModes.Follow}
           styleURL={MapboxGL.StyleURL.Street}
           style={styles.map}
-          onPress={event => this.handleMapPress(event)}
-        />
+          onPress={event => this.onMapPress(event)}
+        >
+          <MapboxGL.ShapeSource
+            id="symbolLocationSource"
+            hitbox={{ width: 20, height: 20 }}
+            onPress={this.onSourceLayerPress}
+            shape={this.state.featureCollection}
+          >
+            <MapboxGL.SymbolLayer
+              id="symbolLocationSymbols"
+              minZoomLevel={1}
+              style={mglStyles.icon}
+            />
+          </MapboxGL.ShapeSource>
+        </MapboxGL.MapView>
         <View style={styles.footer}>
           <Text>
             Selected waypoints:
@@ -62,12 +91,27 @@ class RouteMap extends React.Component<Props, ComponentState> {
     )
   }
 
-  handleMapPress(event) {
+  onMapPress(event) {
     const { coordinates: waypointCoordinates } = event.geometry
-    this.setState(state => ({
-      selectedWaypoints: [...state.selectedWaypoints, waypointCoordinates]
-    }))
     // add feature to map, see https://github.com/nitaliano/react-native-mapbox-gl/blob/master/example/src/components/CustomIcon.js
+    const feature = turfHelpers.feature(event.geometry, {
+      waypointNumber: this.state.featureCollection.features.length + 1
+    })
+    feature.id = `${Date.now()}`
+
+    this.setState(state => ({
+      selectedWaypoints: [...state.selectedWaypoints, waypointCoordinates],
+      featureCollection: MapboxGL.geoUtils.addToFeatureCollection(
+        this.state.featureCollection,
+        feature
+      )
+    })
+    )
+  }
+
+  onSourceLayerPress(event) {
+    const feature = event.nativeEvent.payload
+    console.log('You pressed a layer here is your feature', feature)
   }
 
   handleSelectRoute() {
