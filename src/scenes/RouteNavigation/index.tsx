@@ -1,14 +1,14 @@
 import { connect } from 'react-redux'
 import React from 'react'
 import { StateType } from '../../reducers'
-import { View, Text, GeolocationReturnType } from 'react-native'
+import { View, Text } from 'react-native'
 import styles from './styles'
-import MapboxGL from '@mapbox/react-native-mapbox-gl'
 import NavigationBanner from './components/NavigationBanner'
 import GeoUtils from './services/GeoUtils'
 import configs from '../../../configs'
 import { startNextNavigationStep } from '../../actions/maps'
 import Position from '../../services/geolocation/Position'
+import NavigationMap from './components/NavigationMap'
 
 type Props = {
   isFetching,
@@ -18,14 +18,6 @@ type Props = {
   currentNavigationStep,
   currentPosition: Position
 }
-
-const layerStyles = MapboxGL.StyleSheet.create({
-  route: {
-    lineColor: 'red',
-    lineWidth: 3,
-    lineOpacity: 0.84,
-  }
-})
 
 type ComponentState = {
   distanceToNextManeuver: number,
@@ -58,21 +50,7 @@ class RouteNavigation extends React.PureComponent<Props, ComponentState> {
         <View style={styles.banner}>
           <NavigationBanner distanceToNextManeuver={this.state.distanceToNextManeuver} maneuverType={this.state.nextManeuverType} />
         </View>
-        <MapboxGL.MapView
-          showUserLocation={true}
-          zoomLevel={12}
-          userTrackingMode={MapboxGL.UserTrackingModes.Follow}
-          styleURL={MapboxGL.StyleURL.Street}
-          style={styles.map}
-        >
-          <MapboxGL.ShapeSource id="routeSource" shape={routeGeometry}>
-            <MapboxGL.LineLayer
-              id="routeFill"
-              style={layerStyles.route}
-              belowLayerID="originInnerCircle"
-            />
-          </MapboxGL.ShapeSource>
-        </MapboxGL.MapView>
+        <NavigationMap routeGeometry={routeGeometry}/>
       </View>
     )
   }
