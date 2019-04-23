@@ -148,7 +148,7 @@ class RouteNavigation extends React.PureComponent<Props, ComponentState> {
 
     const currentRoutePosition = nearestPointOnLine(routeGeometry, currentPositionGeoJson)
     if (this.state.currentRoutePosition && turfEqual(currentRoutePosition, this.state.currentRoutePosition)) return
-    const routeCoords = turfInvariant.getCoords(this.props.routeGeometry)
+    const routeCoords = turfInvariant.getCoords(routeGeometry)
     const startingPoint = turfHelpers.point(routeCoords[0])
     // TODO: rename after GeoJSON conversion
     const progressGeometry = lineSlice(startingPoint, currentPositionGeoJson, routeGeometry)
