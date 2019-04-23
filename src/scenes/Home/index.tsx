@@ -9,18 +9,23 @@ import { StateType } from '../../reducers'
 import { GeolocationState } from '../../reducers/geolocation'
 import { DisplayType } from '../../services/display/DisplayType'
 import { Display } from '../../services/display/Display'
-import DisplayFactory from '../../services/display/DisplayFactory'
 import { getDisplay } from '../../reducers/settings'
+import { setDesiredSpeed } from '../../actions/settings'
 
 interface Props {
-  geolocation: GeolocationState,
-  displayType: DisplayType,
-  display: Display,
+  geolocation: GeolocationState
+  displayType: DisplayType
+  display: Display
+  defaultDesiredSpeed: number
+  setDesiredSpeed
   // TODO: type
   navigation: any
+  desiredSpeed: number
 }
 
-interface ComponentState {}
+interface ComponentState {
+  desiredSpeed: number
+}
 class Home extends Component<Props, ComponentState> {
   static navigationOptions = ({ navigation }: NavigationScreenProps): NavigationScreenOptions => ({
     title: 'Speegulator Prototype',
@@ -56,6 +61,9 @@ class Home extends Component<Props, ComponentState> {
 
   constructor(props: Props) {
     super(props)
+    this.state = {
+      desiredSpeed: this.props.desiredSpeed
+    }
   }
 
   render() {
@@ -63,23 +71,18 @@ class Home extends Component<Props, ComponentState> {
       <View style={styles.container}>
         <Text>Geolocation: {JSON.stringify(this.props.geolocation)}</Text>
         <Text>Display type: {this.props.displayType}</Text>
-        <TextInput style={styles.speedInput} keyboardType="numeric"></TextInput>
+
+        <TextInput value={`${this.state.desiredSpeed || ''}`} style={styles.speedInput} onChangeText={text => this.setState({ desiredSpeed: Number.parseInt(text, 10) || 0 })} keyboardType="numeric" />
+        <Button title="Set desired speed" onPress={() => this.props.setDesiredSpeed(this.state.desiredSpeed)} />
+
         <Button title="Decrease speed" onPress={() => this.props.display.displayDecreaseSpeed()} />
         <Button title="Increase speed" onPress={() => this.props.display.displayIncreaseSpeed()} />
       </View>
     )
   }
-
-  componentDidUpdate(prevProps: Props) {
-    const { displayType } = this.props
-    if (prevProps.displayType !== displayType) {
-      this.setState({
-        display: DisplayFactory.createDisplay(displayType)
-      })
-    }
-  }
 }
 
-const mapStateToProps = (state: StateType) => ({ geolocation: state.geolocation, displayType: state.settings.displayType, display: getDisplay(state) })
+const mapDispatchToProps = { setDesiredSpeed }
+const mapStateToProps = (state: StateType) => ({ geolocation: state.geolocation, displayType: state.settings.displayType, display: getDisplay(state), desiredSpeed: state.settings.desiredSpeed })
 
-export default connect(mapStateToProps)(Home)
+export default connect(mapStateToProps, mapDispatchToProps)(Home)
