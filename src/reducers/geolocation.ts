@@ -1,9 +1,8 @@
 import { updateGeolocation, UPDATE_GEOLOCATION } from '../actions/geolocation'
-import { GeolocationReturnType } from 'react-native'
-import Position from '../services/geolocation/Position'
+import { point, Point, Feature } from '@turf/helpers'
 
 export type GeolocationState = {
-  position: Position | null,
+  position: Feature<Point> | null,
   speed: number
 }
 
@@ -21,10 +20,7 @@ const geolocation = (
       const { coords } = action.geolocation
       const { longitude, latitude } = coords
       return {
-        position: {
-          longitude,
-          latitude
-        },
+        position: point([longitude, latitude]),
         speed: coords.speed || 0
       }
     default:

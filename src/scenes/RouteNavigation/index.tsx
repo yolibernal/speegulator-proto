@@ -4,13 +4,13 @@ import { StateType } from '../../reducers'
 import { View, Text } from 'react-native'
 import styles from './styles'
 import NavigationBanner from './components/NavigationBanner'
-import Position from '../../services/geolocation/Position'
 import NavigationMap from './components/NavigationMap'
 import { getDistanceToNextManeuver, getRouteProgress, getNextManeuver, Maneuver } from '../../reducers/selectors'
+import { Feature, Point } from '@turf/helpers'
 
 type Props = {
   isFetching: boolean,
-  currentPosition: Position,
+  currentPosition: Feature<Point>,
   routeGeometry,
   nextManeuver: Maneuver,
   distanceToNextManeuver: number,

@@ -1,10 +1,10 @@
-import * as turfHelpers from '@turf/helpers'
+import { point } from '@turf/helpers'
 import nearestPointOnLine from '@turf/nearest-point-on-line'
 import lineSlice from '@turf/line-slice'
 import * as turfInvariant from '@turf/invariant'
-import GeoUtils from '../scenes/RouteNavigation/services/GeoUtils'
 import { createSelector } from 'reselect'
 import { StateType } from './index'
+import turfDistance from '@turf/distance'
 
 export type Maneuver = {
   // tslint:disable-next-line: no-reserved-keywords
@@ -55,9 +55,11 @@ export const getDistanceToNextManeuver = createSelector(
     if (!currentPosition || !currentNavigationStep) return -1
 
     const { maneuver } = currentNavigationStep
-    const [maneuverLongitude, maneuverLatitude] = maneuver.location
-    // TODO: use turf directly instead of GeoUtils wrapper
-    const distanceToNextManeuver = GeoUtils.calculateDistance(currentPosition, { longitude: maneuverLongitude, latitude: maneuverLatitude })
+    const maneuverPosition = point(maneuver.location)
+    const distanceToNextManeuver = turfDistance(
+      currentPosition, maneuverPosition,
+      { units: 'kilometers' }
+    )
 
     return distanceToNextManeuver
   }
@@ -68,18 +70,13 @@ export const getRouteProgress = createSelector(
   (currentPosition, routeGeometry) => {
     if (!currentPosition || !routeGeometry) return null
 
-    const { longitude, latitude } = currentPosition
-    // TODO: convert points/lines in state/actions etc. to GeoJSON
-    const currentPositionGeoJson = turfHelpers.point([longitude, latitude])
-
-    const position = nearestPointOnLine(routeGeometry, currentPositionGeoJson)
+    const nearestPositionOnRoute = nearestPointOnLine(routeGeometry, currentPosition)
     const routeCoords = turfInvariant.getCoords(routeGeometry)
-    const startingPoint = turfHelpers.point(routeCoords[0])
-    // TODO: rename after GeoJSON conversion
-    const geometry = lineSlice(startingPoint, currentPositionGeoJson, routeGeometry)
+    const startingPosition = point(routeCoords[0])
+    const progressGeometry = lineSlice(startingPosition, currentPosition, routeGeometry)
     return {
-      position,
-      geometry
+      position: nearestPositionOnRoute,
+      geometry: progressGeometry
     }
   }
 )
