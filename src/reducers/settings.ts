@@ -1,15 +1,15 @@
 import { CHANGE_DISPLAY_TYPE } from '../actions/settings'
 import { DisplayType } from '../services/display/DisplayType'
 
-type Settings = {
+type SettingsState = {
   displayType: DisplayType
 }
 
-const initialState: Settings = {
+const initialState: SettingsState = {
   displayType: DisplayType.VIBRATION
 }
 
-const settings = (state = initialState, action): Settings => {
+const settings = (state = initialState, action): SettingsState => {
   switch (action.type) {
     case CHANGE_DISPLAY_TYPE:
       return {

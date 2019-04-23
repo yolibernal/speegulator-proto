@@ -1,7 +1,18 @@
 import { SELECT_ROUTE, REQUEST_DIRECTIONS, RECEIVE_DIRECTIONS, START_NEXT_NAVIGATION_STEP, REQUEST_DIRECTIONS_FAILED } from '../actions/maps'
+import { FeatureCollection, Point, LineString } from '@turf/helpers'
 
-// TODO: type
-const initialState = {
+type MapsState = {
+  routeWaypoints: FeatureCollection<Point> | null
+  directions: {
+    routeGeometry: LineString | null
+    navigationSteps: any[]
+    lastUpdated: Date | null
+    currentNavigationStepIndex: number
+    isFetching: boolean
+  }
+}
+
+const initialState: MapsState = {
   routeWaypoints: null,
   directions: {
     routeGeometry: null,
@@ -15,7 +26,7 @@ const initialState = {
 const maps = (
   state = initialState,
   action
-) => {
+): MapsState => {
   switch (action.type) {
     case SELECT_ROUTE:
       return {

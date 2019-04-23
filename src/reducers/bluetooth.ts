@@ -1,12 +1,17 @@
 import { ADD_DEVICE, SELECT_DEVICE } from '../actions/bluetooth'
 
+type BluetoothState = {
+  devices: any[]
+  selectedDevice: string
+}
+
 // TODO: device type
-const initialState: { devices: any[], selectedDevice: string} = {
+const initialState: BluetoothState = {
   devices: [],
   selectedDevice: ''
 }
 
-const bluetooth = (state = initialState, action) => {
+const bluetooth = (state = initialState, action): BluetoothState => {
   switch (action.type) {
     case ADD_DEVICE:
       const foundDevice = action.device
