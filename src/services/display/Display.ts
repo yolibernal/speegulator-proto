@@ -6,4 +6,6 @@ export interface Display {
   */
   displayDecreaseSpeed(): Promise<void>
   displayIncreaseSpeed(): Promise<void>
+
+  maneuver(options): Promise<void>
 }

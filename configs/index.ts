@@ -4,8 +4,14 @@ const name = 'speegulator-proto'
 
 const vibrationDisplay = {
   patterns: {
-    increase: [0, 1000, 0, 2000],
-    decrease: [0, 3000]
+    speed: {
+      increase: [0, 1000, 0, 2000],
+      decrease: [0, 3000]
+    },
+    maneuver: {
+      right: [0, 500],
+      left: [0, 250, 0, 250]
+    }
   }
 }
 

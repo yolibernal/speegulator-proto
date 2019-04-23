@@ -8,6 +8,9 @@ import NavigationMap from './components/NavigationMap'
 import { getDistanceToNextManeuver, getRouteProgress } from '../../reducers/selectors'
 import { Feature, Point } from '@turf/helpers'
 import { Maneuver, getNextManeuver } from '../../reducers/maps'
+import { getDisplay } from '../../reducers/settings'
+import isEqual from 'lodash.isequal'
+import { Display } from '../../services/display/Display'
 
 type Props = {
   isFetching: boolean,
@@ -18,7 +21,8 @@ type Props = {
   routeProgress: {
     position,
     geometry
-  }
+  },
+  display: Display
 }
 
 type ComponentState = {}
@@ -82,6 +86,15 @@ class RouteNavigation extends React.PureComponent<Props, ComponentState> {
       </View>
     )
   }
+
+  componentDidUpdate(prevProps: Props) {
+    if (!isEqual(prevProps.nextManeuver, this.props.nextManeuver)) {
+      const options = {
+        ...prevProps.nextManeuver
+      }
+      this.props.display.maneuver(options)
+    }
+  }
 }
 
 const mapStateToProps = (state: StateType) => {
@@ -94,13 +107,16 @@ const mapStateToProps = (state: StateType) => {
   const distanceToNextManeuver = getDistanceToNextManeuver(state)
   const routeProgress = getRouteProgress(state)
 
+  const display = getDisplay(state)
+
   return {
     isFetching,
     currentPosition,
     routeGeometry,
     nextManeuver,
     distanceToNextManeuver,
-    routeProgress
+    routeProgress,
+    display
   }
 }
 const mapDispatchToProps = {}
