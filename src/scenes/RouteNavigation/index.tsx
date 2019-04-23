@@ -4,43 +4,23 @@ import { StateType } from '../../reducers'
 import { View, Text } from 'react-native'
 import styles from './styles'
 import NavigationBanner from './components/NavigationBanner'
-import GeoUtils from './services/GeoUtils'
-import configs from '../../../configs'
-import { startNextNavigationStep } from '../../actions/maps'
 import Position from '../../services/geolocation/Position'
 import NavigationMap from './components/NavigationMap'
-import * as turfHelpers from '@turf/helpers'
-import nearestPointOnLine from '@turf/nearest-point-on-line'
-import turfEqual from '@turf/boolean-equal'
-import lineSlice from '@turf/line-slice'
-import * as turfInvariant from '@turf/invariant'
-import isEqual from 'lodash.isequal'
+import { getDistanceToNextManeuver, getRouteProgress, getNextManeuver, Maneuver } from '../../reducers/selectors'
 
 type Props = {
-  isFetching,
-  startNextNavigationStep,
-  route,
+  isFetching: boolean,
+  currentPosition: Position,
   routeGeometry,
-  currentNavigationStep,
-  currentPosition: Position
+  nextManeuver: Maneuver,
+  distanceToNextManeuver: number,
+  routeProgress: {
+    position,
+    geometry
+  }
 }
 
-type ComponentState = {
-  distanceToNextManeuver: number,
-  nextManeuver: {
-    // tslint:disable-next-line: no-reserved-keywords
-    type: string,
-    modifier: string,
-    instruction: string,
-    voiceInstructions: {
-      distanceAlongGeometry: number,
-      announcement: string,
-      ssmlAnnouncement: string
-    }
-  },
-  currentRoutePosition,
-  progressGeometry
-}
+type ComponentState = {}
 
 class RouteNavigation extends React.PureComponent<Props, ComponentState> {
   static navigationOptions = {
@@ -56,7 +36,7 @@ class RouteNavigation extends React.PureComponent<Props, ComponentState> {
         type: 'TYPE',
         modifier: 'MODIFIER',
         instruction: 'INSTRUCTION',
-        voiceInstructions:{
+        voiceInstructions: {
           distanceAlongGeometry: 9999,
           announcement: 'ANNOUNCEMENT',
           ssmlAnnouncement: 'SSML_ANNOUNCEMENT'
@@ -71,17 +51,17 @@ class RouteNavigation extends React.PureComponent<Props, ComponentState> {
     const { isFetching } = this.props
     if (isFetching) return this.renderFetching()
 
-    const { route, routeGeometry } = this.props
-    if (!route) return this.renderNoRoute()
+    const { routeGeometry } = this.props
+    if (!routeGeometry) return this.renderNoRoute()
 
-    const { distanceToNextManeuver, nextManeuver, currentRoutePosition, progressGeometry } = this.state
+    const { distanceToNextManeuver, nextManeuver, routeProgress } = this.props
 
     return (
       <View style={styles.container}>
         <View style={styles.banner}>
           <NavigationBanner distanceToNextManeuver={distanceToNextManeuver} maneuver={nextManeuver} />
         </View>
-        <NavigationMap currentRoutePosition={currentRoutePosition} routeGeometry={routeGeometry} progressGeometry={progressGeometry} />
+        <NavigationMap currentRoutePosition={routeProgress.position} routeGeometry={routeGeometry} progressGeometry={routeProgress.geometry} />
       </View>
     )
   }
@@ -101,84 +81,40 @@ class RouteNavigation extends React.PureComponent<Props, ComponentState> {
       </View>
     )
   }
-
-  componentDidMount() {
-    this.handleManuever()
-    this.calculateProgress()
-  }
-
-  componentDidUpdate() {
-    this.handleManuever()
-    this.calculateProgress()
-  }
-
-  handleManuever() {
-    const { currentPosition, currentNavigationStep } = this.props
-    if (!currentPosition || !currentNavigationStep) return
-
-    const distanceToNextManeuver = this.calculateDistanceToNextManeuver(currentPosition, currentNavigationStep)
-    const { type, modifier, instruction } = currentNavigationStep.maneuver
-    const { voiceInstructions, bannerInstructions } = currentNavigationStep
-    const nextManeuver = {
-      type,
-      modifier,
-      instruction,
-      voiceInstructions: voiceInstructions[0]
-    }
-
-    if (!isEqual(this.state.nextManeuver, nextManeuver) || !(this.state.distanceToNextManeuver !== distanceToNextManeuver)) {
-      this.setState({
-        distanceToNextManeuver,
-        nextManeuver
-      })
-    }
-
-    if (distanceToNextManeuver < configs.maps.nextStepDistanceThreshold) {
-      this.props.startNextNavigationStep()
-    }
-  }
-
-  calculateProgress() {
-    const { currentPosition, routeGeometry } = this.props
-    if (!currentPosition || !routeGeometry) return
-
-    const { longitude, latitude } = currentPosition
-    // TODO: convert points/lines in state/actions etc. to GeoJSON
-    const currentPositionGeoJson = turfHelpers.point([longitude, latitude])
-
-    const currentRoutePosition = nearestPointOnLine(routeGeometry, currentPositionGeoJson)
-    if (this.state.currentRoutePosition && turfEqual(currentRoutePosition, this.state.currentRoutePosition)) return
-    const routeCoords = turfInvariant.getCoords(routeGeometry)
-    const startingPoint = turfHelpers.point(routeCoords[0])
-    // TODO: rename after GeoJSON conversion
-    const progressGeometry = lineSlice(startingPoint, currentPositionGeoJson, routeGeometry)
-    this.setState({
-      currentRoutePosition,
-      progressGeometry
-    })
-  }
-
-  private calculateDistanceToNextManeuver(currentPosition, currentNavigationStep) {
-    const { maneuver } = currentNavigationStep
-    const [maneuverLongitude, maneuverLatitude] = maneuver.location
-    const distanceToNextManeuver = GeoUtils.calculateDistance(currentPosition, { longitude: maneuverLongitude, latitude: maneuverLatitude })
-
-    return distanceToNextManeuver
-  }
 }
 
 const mapStateToProps = (state: StateType) => {
+  const { position: currentPosition } = state.geolocation
+  const { isFetching } = state.maps.directions
   const { directions } = state.maps
-  const { route, routeGeometry, navigationSteps, currentNavigationStepIndex } = directions
+  const { routeGeometry, navigationSteps, currentNavigationStepIndex } = directions
+
   const currentNavigationStep = navigationSteps ? navigationSteps[currentNavigationStepIndex] : null
+
+  let nextManeuver
+  if (currentNavigationStep) {
+    nextManeuver = getNextManeuver(currentNavigationStep)
+  }
+
+  let distanceToNextManeuver
+  if (currentPosition && currentNavigationStep) {
+    distanceToNextManeuver = getDistanceToNextManeuver(currentPosition, currentNavigationStep)
+  }
+
+  let routeProgress
+  if (currentPosition && routeGeometry) {
+    routeProgress = getRouteProgress(currentPosition, routeGeometry)
+  }
+
   return {
-    currentPosition: state.geolocation.position,
-    isFetching: state.maps.directions.isFetching,
-    route,
+    isFetching,
+    currentPosition,
     routeGeometry,
-    currentNavigationStep
+    nextManeuver,
+    distanceToNextManeuver,
+    routeProgress
   }
 }
-const mapDispatchToProps = { startNextNavigationStep }
+const mapDispatchToProps = {}
 
 export default connect(mapStateToProps, mapDispatchToProps)(RouteNavigation)

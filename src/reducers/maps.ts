@@ -4,7 +4,6 @@ const maps = (
   state = {
     routeWaypoints: [],
     directions: {
-      route: null,
       routeGeometry: null,
       navigationSteps: [],
       lastUpdated: null,
@@ -41,7 +40,6 @@ const maps = (
         []
       )
       const directions = {
-        route,
         routeGeometry,
         navigationSteps,
         lastUpdated,

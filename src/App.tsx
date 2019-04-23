@@ -11,12 +11,14 @@ import rootReducer from './reducers'
 import Settings from './scenes/Settings'
 import RouteMap from './scenes/RouteMap'
 import thunkMiddleware from 'redux-thunk'
+import { nextStepInitiator } from './middleware/maps'
 
 import MapboxGL from '@mapbox/react-native-mapbox-gl'
 import RouteNavigation from './scenes/RouteNavigation'
 
 const middlewares = [
-  thunkMiddleware
+  thunkMiddleware,
+  nextStepInitiator
 ]
 const enhancer = composeWithDevTools({})(applyMiddleware(...middlewares))
 
