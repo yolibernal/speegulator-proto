@@ -14,15 +14,17 @@ import { Display } from '../../services/display/Display'
 
 type Props = {
   isFetching: boolean,
-  currentPosition: Feature<Point>,
+  currentPosition: Feature<Point> | null
+  currentSpeed: number
   routeGeometry,
-  nextManeuver: Maneuver,
+  nextManeuver: Maneuver | null,
   distanceToNextManeuver: number,
   routeProgress: {
     position,
     geometry
-  },
+  } | null,
   display: Display
+  desiredSpeed: number
 }
 
 type ComponentState = {}
@@ -61,6 +63,8 @@ class RouteNavigation extends React.PureComponent<Props, ComponentState> {
 
     const { distanceToNextManeuver, nextManeuver, routeProgress } = this.props
 
+    if (!nextManeuver || !routeProgress) return this.renderPropertiesMissing()
+
     return (
       <View style={styles.container}>
         <View style={styles.banner}>
@@ -87,6 +91,14 @@ class RouteNavigation extends React.PureComponent<Props, ComponentState> {
     )
   }
 
+  renderPropertiesMissing() {
+    return (
+      <View>
+        <Text>Required navigation properties are missing :(</Text>
+      </View>
+    )
+  }
+
   componentDidUpdate(prevProps: Props) {
     if (!isEqual(prevProps.nextManeuver, this.props.nextManeuver)) {
       const options = {
@@ -97,11 +109,12 @@ class RouteNavigation extends React.PureComponent<Props, ComponentState> {
   }
 }
 
-const mapStateToProps = (state: StateType) => {
-  const { position: currentPosition } = state.geolocation
+const mapStateToProps = (state: StateType): Props => {
+  const { position: currentPosition, speed: currentSpeed } = state.geolocation
   const { isFetching } = state.maps.directions
   const { directions } = state.maps
   const { routeGeometry } = directions
+  const { desiredSpeed } = state.settings
 
   const nextManeuver = getNextManeuver(state)
   const distanceToNextManeuver = getDistanceToNextManeuver(state)
@@ -112,6 +125,8 @@ const mapStateToProps = (state: StateType) => {
   return {
     isFetching,
     currentPosition,
+    currentSpeed,
+    desiredSpeed,
     routeGeometry,
     nextManeuver,
     distanceToNextManeuver,
