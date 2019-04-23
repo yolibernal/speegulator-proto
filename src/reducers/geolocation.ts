@@ -1,5 +1,6 @@
 import { updateGeolocation, UPDATE_GEOLOCATION } from '../actions/geolocation'
 import { point, Point, Feature } from '@turf/helpers'
+import { StateType } from './index'
 
 export type GeolocationState = {
   position: Feature<Point> | null,
@@ -29,3 +30,5 @@ const geolocation = (
 }
 
 export default geolocation
+
+export const getCurrentPosition = (state: StateType) => state.geolocation.position

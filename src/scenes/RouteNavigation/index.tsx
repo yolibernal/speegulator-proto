@@ -5,8 +5,9 @@ import { View, Text } from 'react-native'
 import styles from './styles'
 import NavigationBanner from './components/NavigationBanner'
 import NavigationMap from './components/NavigationMap'
-import { getDistanceToNextManeuver, getRouteProgress, getNextManeuver, Maneuver } from '../../reducers/selectors'
+import { getDistanceToNextManeuver, getRouteProgress } from '../../reducers/selectors'
 import { Feature, Point } from '@turf/helpers'
+import { Maneuver, getNextManeuver } from '../../reducers/maps'
 
 type Props = {
   isFetching: boolean,

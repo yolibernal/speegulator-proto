@@ -1,5 +1,7 @@
 import { SELECT_ROUTE, REQUEST_DIRECTIONS, RECEIVE_DIRECTIONS, START_NEXT_NAVIGATION_STEP, REQUEST_DIRECTIONS_FAILED } from '../actions/maps'
 import { FeatureCollection, Point, LineString } from '@turf/helpers'
+import { StateType } from './index'
+import { createSelector } from 'reselect'
 
 type MapsState = {
   routeWaypoints: FeatureCollection<Point> | null
@@ -88,3 +90,45 @@ const maps = (
 }
 
 export default maps
+
+export const getNavigationSteps = (state: StateType) => state.maps.directions.navigationSteps
+export const getRouteGeometry = (state: StateType) => state.maps.directions.routeGeometry
+export const getCurrentNavigationStepIndex = (state: StateType) => state.maps.directions.currentNavigationStepIndex
+
+export const getCurrentNavigationStep = createSelector(
+  [getNavigationSteps, getCurrentNavigationStepIndex],
+  (navigationSteps, currentNavigationStepIndex) => {
+    const currentNavigationStep = navigationSteps ? navigationSteps[currentNavigationStepIndex] : null
+    return currentNavigationStep
+  }
+)
+
+export type Maneuver = {
+  // tslint:disable-next-line: no-reserved-keywords
+  type: string
+  modifier: string
+  instruction: string
+  voiceInstructions: {
+    distanceAlongGeometry: number
+    announcement: string
+    ssmlAnnouncement: string
+  }
+}
+
+export const getNextManeuver = createSelector(
+  [getCurrentNavigationStep],
+  (currentNavigationStep): Maneuver | null => {
+    if (!currentNavigationStep) return null
+
+    const { type, modifier, instruction } = currentNavigationStep.maneuver
+    // TODO: use bannerInstructions?
+    const { voiceInstructions, bannerInstructions } = currentNavigationStep
+    const nextManeuver = {
+      type,
+      modifier,
+      instruction,
+      voiceInstructions: voiceInstructions[0]
+    }
+    return nextManeuver
+  }
+)
