@@ -87,24 +87,11 @@ const mapStateToProps = (state: StateType) => {
   const { position: currentPosition } = state.geolocation
   const { isFetching } = state.maps.directions
   const { directions } = state.maps
-  const { routeGeometry, navigationSteps, currentNavigationStepIndex } = directions
+  const { routeGeometry } = directions
 
-  const currentNavigationStep = navigationSteps ? navigationSteps[currentNavigationStepIndex] : null
-
-  let nextManeuver
-  if (currentNavigationStep) {
-    nextManeuver = getNextManeuver(currentNavigationStep)
-  }
-
-  let distanceToNextManeuver
-  if (currentPosition && currentNavigationStep) {
-    distanceToNextManeuver = getDistanceToNextManeuver(currentPosition, currentNavigationStep)
-  }
-
-  let routeProgress
-  if (currentPosition && routeGeometry) {
-    routeProgress = getRouteProgress(currentPosition, routeGeometry)
-  }
+  const nextManeuver = getNextManeuver(state)
+  const distanceToNextManeuver = getDistanceToNextManeuver(state)
+  const routeProgress = getRouteProgress(state)
 
   return {
     isFetching,
