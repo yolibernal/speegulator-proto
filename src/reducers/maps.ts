@@ -1,16 +1,19 @@
 import { SELECT_ROUTE, REQUEST_DIRECTIONS, RECEIVE_DIRECTIONS, START_NEXT_NAVIGATION_STEP, REQUEST_DIRECTIONS_FAILED } from '../actions/maps'
 
+// TODO: type
+const initialState = {
+  routeWaypoints: null,
+  directions: {
+    routeGeometry: null,
+    navigationSteps: [],
+    lastUpdated: null,
+    currentNavigationStepIndex: 0,
+    isFetching: false
+  }
+}
+
 const maps = (
-  state = {
-    routeWaypoints: [],
-    directions: {
-      routeGeometry: null,
-      navigationSteps: [],
-      lastUpdated: null,
-      currentNavigationStepIndex: 0,
-      isFetching: false
-    }
-  },
+  state = initialState,
   action
 ) => {
   switch (action.type) {

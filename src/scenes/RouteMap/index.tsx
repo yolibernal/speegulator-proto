@@ -6,6 +6,7 @@ import styles from './styles'
 import { Button } from 'react-native-elements'
 import { selectRoute, fetchDirections } from '../../actions/maps'
 import * as turfHelpers from '@turf/helpers'
+import { getGeom } from '@turf/invariant'
 // import locationIcon from '../../assets/location_icon.png'
 /*
 event example
@@ -38,9 +39,7 @@ type Props = {
 }
 
 type ComponentState = {
-  // TODO: replace selectedWaypoints with feature collection? (features also contain coordinates)
-  selectedWaypoints: number[][],
-  featureCollection: turfHelpers.FeatureCollection
+  selectedWaypoints: turfHelpers.FeatureCollection<turfHelpers.Point>
 }
 
 class RouteMap extends React.Component<Props, ComponentState> {
@@ -51,8 +50,7 @@ class RouteMap extends React.Component<Props, ComponentState> {
   constructor(props) {
     super(props)
     this.state = {
-      selectedWaypoints: [],
-      featureCollection: MapboxGL.geoUtils.makeFeatureCollection()
+      selectedWaypoints: turfHelpers.featureCollection([])
     }
   }
 
@@ -71,7 +69,7 @@ class RouteMap extends React.Component<Props, ComponentState> {
             id="symbolLocationSource"
             hitbox={{ width: 20, height: 20 }}
             onPress={this.onSourceLayerPress}
-            shape={this.state.featureCollection}
+            shape={this.state.selectedWaypoints}
           >
             <MapboxGL.SymbolLayer
               id="symbolLocationSymbols"
@@ -83,7 +81,7 @@ class RouteMap extends React.Component<Props, ComponentState> {
         <View style={styles.footer}>
           <Text>
             Selected waypoints:
-            {this.state.selectedWaypoints}
+            {this.state.selectedWaypoints.features.map(feature => getGeom(feature).coordinates)}
           </Text>
           <Button title="Select Route" onPress={() => this.handleSelectRoute()} />
         </View>
@@ -92,21 +90,19 @@ class RouteMap extends React.Component<Props, ComponentState> {
   }
 
   onMapPress(event) {
-    const { coordinates: waypointCoordinates } = event.geometry
     // add feature to map, see https://github.com/nitaliano/react-native-mapbox-gl/blob/master/example/src/components/CustomIcon.js
-    const feature = turfHelpers.feature(event.geometry, {
-      waypointNumber: this.state.featureCollection.features.length + 1
+    const waypoint = turfHelpers.feature(event.geometry, {
+      waypointNumber: this.state.selectedWaypoints.features.length + 1
     })
-    feature.id = `${Date.now()}`
+    waypoint.id = `${Date.now()}`
 
-    this.setState(state => ({
-      selectedWaypoints: [...state.selectedWaypoints, waypointCoordinates],
-      featureCollection: MapboxGL.geoUtils.addToFeatureCollection(
-        this.state.featureCollection,
-        feature
-      )
+    this.setState((state) => {
+      const selectedWaypointsCopy = Object.assign({}, state.selectedWaypoints)
+      selectedWaypointsCopy.features.push(waypoint)
+      return {
+        selectedWaypoints: selectedWaypointsCopy
+      }
     })
-    )
   }
 
   onSourceLayerPress(event) {
@@ -115,11 +111,12 @@ class RouteMap extends React.Component<Props, ComponentState> {
   }
 
   handleSelectRoute() {
-    const selectedWaypoints = this.state.selectedWaypoints
+    const { selectedWaypoints } = this.state
+    // TODO: combine selectRoute and fetchDirections?
     this.props.selectRoute(selectedWaypoints)
     this.props.fetchDirections(selectedWaypoints)
     this.setState(() => ({
-      selectedWaypoints: []
+      selectedWaypoints: turfHelpers.featureCollection([])
     }))
     this.props.navigation.navigate('RouteNavigation')
   }

@@ -1,4 +1,5 @@
 import DirectionsClient from '../services/maps/DirectionsClient'
+import { FeatureCollection, Point } from '@turf/helpers'
 const directionsClient = new DirectionsClient()
 
 export const SELECT_ROUTE = 'SELECT_ROUTE'
@@ -31,7 +32,7 @@ export const startNextNavigationStep = () => ({
   type: START_NEXT_NAVIGATION_STEP
 })
 
-export const fetchDirections = routeWaypoints => async (dispatch) => {
+export const fetchDirections = (routeWaypoints: FeatureCollection<Point>) => async (dispatch) => {
   try {
     dispatch(requestDirections(routeWaypoints))
     const directions = await directionsClient.fetchDirections(routeWaypoints)
