@@ -14,6 +14,7 @@ import nearestPointOnLine from '@turf/nearest-point-on-line'
 import turfEqual from '@turf/boolean-equal'
 import lineSlice from '@turf/line-slice'
 import * as turfInvariant from '@turf/invariant'
+import isEqual from 'lodash.isequal'
 
 type Props = {
   isFetching,
@@ -26,7 +27,17 @@ type Props = {
 
 type ComponentState = {
   distanceToNextManeuver: number,
-  nextManeuverType: string,
+  nextManeuver: {
+    // tslint:disable-next-line: no-reserved-keywords
+    type: string,
+    modifier: string,
+    instruction: string,
+    voiceInstructions: {
+      distanceAlongGeometry: number,
+      announcement: string,
+      ssmlAnnouncement: string
+    }
+  },
   currentRoutePosition,
   progressGeometry
 }
@@ -41,7 +52,16 @@ class RouteNavigation extends React.PureComponent<Props, ComponentState> {
 
     this.state = {
       distanceToNextManeuver: 9999,
-      nextManeuverType: 'NONE',
+      nextManeuver: {
+        type: 'TYPE',
+        modifier: 'MODIFIER',
+        instruction: 'INSTRUCTION',
+        voiceInstructions:{
+          distanceAlongGeometry: 9999,
+          announcement: 'ANNOUNCEMENT',
+          ssmlAnnouncement: 'SSML_ANNOUNCEMENT'
+        }
+      },
       currentRoutePosition: null,
       progressGeometry: null
     }
@@ -54,12 +74,12 @@ class RouteNavigation extends React.PureComponent<Props, ComponentState> {
     const { route, routeGeometry } = this.props
     if (!route) return this.renderNoRoute()
 
-    const { distanceToNextManeuver, nextManeuverType, currentRoutePosition, progressGeometry } = this.state
+    const { distanceToNextManeuver, nextManeuver, currentRoutePosition, progressGeometry } = this.state
 
     return (
       <View style={styles.container}>
         <View style={styles.banner}>
-          <NavigationBanner distanceToNextManeuver={distanceToNextManeuver} maneuverType={nextManeuverType} />
+          <NavigationBanner distanceToNextManeuver={distanceToNextManeuver} maneuver={nextManeuver} />
         </View>
         <NavigationMap currentRoutePosition={currentRoutePosition} routeGeometry={routeGeometry} progressGeometry={progressGeometry} />
       </View>
@@ -97,11 +117,22 @@ class RouteNavigation extends React.PureComponent<Props, ComponentState> {
     if (!currentPosition || !currentNavigationStep) return
 
     const distanceToNextManeuver = this.calculateDistanceToNextManeuver(currentPosition, currentNavigationStep)
-    const nextManeuverType = currentNavigationStep.maneuver.type
-    this.setState({
-      distanceToNextManeuver,
-      nextManeuverType
-    })
+    const { type, modifier, instruction } = currentNavigationStep.maneuver
+    const { voiceInstructions, bannerInstrcutions } = currentNavigationStep
+    const nextManeuver = {
+      type,
+      modifier,
+      instruction,
+      voiceInstructions: voiceInstructions[0]
+    }
+
+    if (!isEqual(this.state.nextManeuver, nextManeuver) || !(this.state.distanceToNextManeuver !== distanceToNextManeuver)) {
+      this.setState({
+        distanceToNextManeuver,
+        nextManeuver
+      })
+    }
+
     if (distanceToNextManeuver < configs.maps.nextStepDistanceThreshold) {
       this.props.startNextNavigationStep()
     }

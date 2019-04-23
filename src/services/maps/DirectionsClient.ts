@@ -22,6 +22,8 @@ export default class DirectionsClient {
         steps: true,
         bannerInstructions: true,
         voiceInstructions: true,
+        // TODO: from config
+        voiceUnits: 'metric',
         annotations: ['distance'],
         waypoints: directionsWaypoints
       })

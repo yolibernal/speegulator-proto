@@ -37,6 +37,7 @@ export const fetchDirections = routeWaypoints => async (dispatch) => {
     const directions = await directionsClient.fetchDirections(routeWaypoints)
     dispatch(receiveDirections(directions))
   } catch (error) {
+    console.warn(error)
     dispatch(requestDirectionsFailed())
   }
 }

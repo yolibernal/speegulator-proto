@@ -9,7 +9,17 @@ import { Button } from 'react-native-elements'
 
 type Props = {
   distanceToNextManeuver,
-  maneuverType,
+  maneuver: {
+    // tslint:disable-next-line: no-reserved-keywords
+    type: string,
+    modifier: string,
+    instruction: string,
+    voiceInstructions: {
+      distanceAlongGeometry:number,
+      announcement: string,
+      ssmlAnnouncement: string
+    }
+  },
   startNextNavigationStep
 }
 
@@ -34,9 +44,11 @@ class NavigationBanner extends React.PureComponent<Props, ComponentState> {
     const unit = `${!displayInMeters ? 'k' : ''}m`
     const distanceToNextManeuverFormatted = `${numberFormatted} ${unit}`
 
+    const { type, modifier, instruction, voiceInstructions } = this.props.maneuver
     return (
       <View>
-        <Text>{distanceToNextManeuverFormatted} until {this.props.maneuverType}</Text>
+        <Text>{distanceToNextManeuverFormatted} until {type} {modifier}</Text>
+        <Text>{instruction} // {voiceInstructions.announcement}</Text>
         <Button title={'Next step'} onPress={() => this.props.startNextNavigationStep()} />
       </View>
     )
