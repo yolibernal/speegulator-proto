@@ -107,7 +107,7 @@ class RouteNavigation extends React.PureComponent<Props, ComponentState> {
     this.calculateProgress()
   }
 
-  componentDidUpdate(prevProps: Props) {
+  componentDidUpdate() {
     this.handleManuever()
     this.calculateProgress()
   }
@@ -118,7 +118,7 @@ class RouteNavigation extends React.PureComponent<Props, ComponentState> {
 
     const distanceToNextManeuver = this.calculateDistanceToNextManeuver(currentPosition, currentNavigationStep)
     const { type, modifier, instruction } = currentNavigationStep.maneuver
-    const { voiceInstructions, bannerInstrcutions } = currentNavigationStep
+    const { voiceInstructions, bannerInstructions } = currentNavigationStep
     const nextManeuver = {
       type,
       modifier,
