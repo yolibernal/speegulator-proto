@@ -3,9 +3,10 @@ import React from 'react'
 import { View, Text, FlatList, Button } from 'react-native'
 import { ListItem, ButtonGroup } from 'react-native-elements'
 import styles from './styles'
-import { changeDisplayType, DisplayType } from '../../actions/settings'
+import { changeDisplayType } from '../../actions/settings'
 import { StateType } from '../../reducers'
 import { selectDevice } from '../../actions/bluetooth'
+import { DisplayType } from '../../services/display/DisplayType'
 // NOTE: convert services to renderless components? https://kyleshevlin.com/renderless-components
 
 type Props = {
@@ -30,9 +31,9 @@ class Settings extends React.Component<Props, ComponentState> {
 
   // TODO: combine with displayTypeButtons and map over
   static indexToDisplayType = [
-    DisplayType.DeviceVibration,
-    DisplayType.VoiceCommand,
-    DisplayType.Haptic
+    DisplayType.VIBRATION,
+    DisplayType.VOICE,
+    DisplayType.WEARABLE
   ]
 
   constructor(props) {
@@ -50,8 +51,8 @@ class Settings extends React.Component<Props, ComponentState> {
       <View>
         <Text>These will be the settings!</Text>
         <Text>Unit (kmh, mph, m/s)</Text>
-        <Text>Display (device vibration, haptic display, voice command)</Text>
-        <Text>Haptic Display (connect wearable)</Text>
+        <Text>Display (device vibration, wearable display, voice command)</Text>
+        <Text>Wearable Display (connect wearable)</Text>
         <Text>Voice Display (voice type, commands)</Text>
         <Text>Vibration Display (vibration pattern)</Text>
         <ListItem

@@ -1,7 +1,7 @@
 export interface Display {
   /* TODO: maybe intensity parameter, could be
     * vibration duration for DeviceVibration
-    * vibration intensity for HapticDisplay
+    * vibration intensity for WearableDisplay
     * different command for VoiceCommand
   */
   displayDecreaseSpeed(): Promise<void>

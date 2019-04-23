@@ -1,36 +1,21 @@
-import { CHANGE_DISPLAY_TYPE, DisplayType } from '../actions/settings'
-import { DeviceVibrationDisplay } from '../services/display/DeviceVibrationDisplay'
-import configs from '../../configs'
-import { VoiceCommandDisplay } from '../services/display/VoiceCommandDisplay'
-import { Display } from '../services/display/Display'
-
-const createDisplayForType = (displayType: (DisplayType | null)) => {
-  switch (displayType) {
-    case (DisplayType.DeviceVibration):
-      return new DeviceVibrationDisplay(configs.display.vibrationDisplay)
-    case (DisplayType.VoiceCommand):
-      return new VoiceCommandDisplay(configs.display.voiceCommandDisplay)
-    // TODO: Haptic Display case
-    default:
-      return new DeviceVibrationDisplay(configs.display.vibrationDisplay)
-  }
-}
+import { CHANGE_DISPLAY_TYPE } from '../actions/settings'
+import { DisplayType } from '../services/display/DisplayType'
 
 type Settings = {
-  displayType: DisplayType,
-  display: Display
+  displayType: DisplayType
 }
 
 const initialState: Settings = {
-  displayType: DisplayType.DeviceVibration,
-  display: createDisplayForType(null)
+  displayType: DisplayType.VIBRATION
 }
 
 const settings = (state = initialState, action): Settings => {
   switch (action.type) {
     case CHANGE_DISPLAY_TYPE:
-      const display = createDisplayForType(action.displayType)
-      return { ...state, displayType: action.displayType, display }
+      return {
+        ...state,
+        displayType: action.displayType
+      }
     default:
       return state
   }
