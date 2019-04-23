@@ -10,17 +10,17 @@ import { GeolocationState } from '../../reducers/geolocation'
 import { DisplayType } from '../../services/display/DisplayType'
 import { Display } from '../../services/display/Display'
 import DisplayFactory from '../../services/display/DisplayFactory'
+import { getDisplay } from '../../reducers/settings'
 
 interface Props {
   geolocation: GeolocationState,
   displayType: DisplayType,
+  display: Display,
   // TODO: type
   navigation: any
 }
 
-interface ComponentState {
-  display: Display
-}
+interface ComponentState {}
 class Home extends Component<Props, ComponentState> {
   static navigationOptions = ({ navigation }: NavigationScreenProps): NavigationScreenOptions => ({
     title: 'Speegulator Prototype',
@@ -56,10 +56,6 @@ class Home extends Component<Props, ComponentState> {
 
   constructor(props: Props) {
     super(props)
-
-    this.state = {
-      display: DisplayFactory.createDisplay(props.displayType)
-    }
   }
 
   render() {
@@ -68,8 +64,8 @@ class Home extends Component<Props, ComponentState> {
         <Text>Geolocation: {JSON.stringify(this.props.geolocation)}</Text>
         <Text>Display type: {this.props.displayType}</Text>
         <TextInput style={styles.speedInput} keyboardType="numeric"></TextInput>
-        <Button title="Decrease speed" onPress={() => this.state.display.displayDecreaseSpeed()} />
-        <Button title="Increase speed" onPress={() => this.state.display.displayIncreaseSpeed()} />
+        <Button title="Decrease speed" onPress={() => this.props.display.displayDecreaseSpeed()} />
+        <Button title="Increase speed" onPress={() => this.props.display.displayIncreaseSpeed()} />
       </View>
     )
   }
@@ -84,6 +80,6 @@ class Home extends Component<Props, ComponentState> {
   }
 }
 
-const mapStateToProps = (state: StateType) => ({ geolocation: state.geolocation, displayType: state.settings.displayType })
+const mapStateToProps = (state: StateType) => ({ geolocation: state.geolocation, displayType: state.settings.displayType, display: getDisplay(state) })
 
 export default connect(mapStateToProps)(Home)
