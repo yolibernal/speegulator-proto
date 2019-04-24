@@ -102,12 +102,22 @@ class RouteNavigation extends React.PureComponent<Props, ComponentState> {
     )
   }
 
-  componentDidUpdate(prevProps: Props) {
+  async componentDidUpdate(prevProps: Props) {
+    const { display } = this.props
     if (!isEqual(prevProps.nextManeuver, this.props.nextManeuver)) {
       const options = {
         ...prevProps.nextManeuver
       }
-      this.props.display.maneuver(options)
+      await display.maneuver(options)
+    }
+
+    // TODO: add "accepted range of speed" eg +/- 2
+    const { currentSpeed, desiredSpeed } = this.props
+    if (currentSpeed < desiredSpeed) {
+      await display.displayIncreaseSpeed()
+    }
+    if (currentSpeed > desiredSpeed) {
+      await display.displayDecreaseSpeed()
     }
   }
 }
