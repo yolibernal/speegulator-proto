@@ -1,7 +1,7 @@
 import { connect } from 'react-redux'
 import React from 'react'
 import { View, Text, FlatList, Button, TextInput } from 'react-native'
-import { ListItem, ButtonGroup } from 'react-native-elements'
+import { ListItem } from 'react-native-elements'
 import styles from './styles'
 import { changeDisplayType, setDesiredSpeedMargin } from '../../actions/settings'
 import { StateType } from '../../reducers'
