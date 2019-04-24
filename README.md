@@ -5,5 +5,5 @@
 * connect navigation and displays ✅
   * display step information ✅
   * voice commands from mapbox ✅
-* implement "run exact speed" feature
+* implement "run exact speed" feature ✅
 * improve UI

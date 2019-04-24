@@ -25,6 +25,7 @@ type Props = {
   } | null,
   display: Display
   desiredSpeed: number
+  desiredSpeedMargin: number
 }
 
 type ComponentState = {}
@@ -111,12 +112,11 @@ class RouteNavigation extends React.PureComponent<Props, ComponentState> {
       await display.maneuver(options)
     }
 
-    // TODO: add "accepted range of speed" eg +/- 2
-    const { currentSpeed, desiredSpeed } = this.props
-    if (currentSpeed < desiredSpeed) {
+    const { currentSpeed, desiredSpeed, desiredSpeedMargin } = this.props
+    if (currentSpeed < (desiredSpeed - desiredSpeedMargin)) {
       await display.displayIncreaseSpeed()
     }
-    if (currentSpeed > desiredSpeed) {
+    if (currentSpeed > (desiredSpeed + desiredSpeedMargin)) {
       await display.displayDecreaseSpeed()
     }
   }
@@ -127,7 +127,7 @@ const mapStateToProps = (state: StateType): Props => {
   const { isFetching } = state.maps.directions
   const { directions } = state.maps
   const { routeGeometry } = directions
-  const { desiredSpeed } = state.settings
+  const { desiredSpeed, desiredSpeedMargin } = state.settings
 
   const nextManeuver = getNextManeuver(state)
   const distanceToNextManeuver = getDistanceToNextManeuver(state)
@@ -140,6 +140,7 @@ const mapStateToProps = (state: StateType): Props => {
     currentPosition,
     currentSpeed,
     desiredSpeed,
+    desiredSpeedMargin,
     routeGeometry,
     nextManeuver,
     distanceToNextManeuver,
