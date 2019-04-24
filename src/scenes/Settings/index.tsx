@@ -1,9 +1,9 @@
 import { connect } from 'react-redux'
 import React from 'react'
-import { View, Text, FlatList, Button } from 'react-native'
+import { View, Text, FlatList, Button, TextInput } from 'react-native'
 import { ListItem, ButtonGroup } from 'react-native-elements'
 import styles from './styles'
-import { changeDisplayType } from '../../actions/settings'
+import { changeDisplayType, setDesiredSpeedMargin } from '../../actions/settings'
 import { StateType } from '../../reducers'
 import { selectDevice } from '../../actions/bluetooth'
 import { DisplayType } from '../../services/display/DisplayType'
@@ -15,13 +15,16 @@ type Props = {
   selectDevice,
   displayType,
   devices,
-  selectedDevice
+  selectedDevice,
+  setDesiredSpeedMargin,
+  desiredSpeedMargin
 }
 
 type ComponentState = {
   displayType: {
     selectedIndex: number
-  }
+  },
+  desiredSpeedMargin: number
 }
 
 class Settings extends React.Component<Props, ComponentState> {
@@ -41,7 +44,8 @@ class Settings extends React.Component<Props, ComponentState> {
     this.state = {
       displayType: {
         selectedIndex: 0
-      }
+      },
+      desiredSpeedMargin: this.props.desiredSpeedMargin
     }
   }
 
@@ -68,6 +72,8 @@ class Settings extends React.Component<Props, ComponentState> {
         />
         <FlatList data={this.props.devices} renderItem={({ item }: { item: any }) => <Button key={item.id} title={item.name || 'Unnamed device'} onPress={() => this.props.selectDevice(item.id)}/>} />
         <Text>Selected device id {this.props.selectedDevice}</Text>
+        <TextInput value={`${this.state.desiredSpeedMargin || ''}`} style={styles.desiredSpeedMarginInput} onChangeText={text => this.setState({ desiredSpeedMargin: Number.parseInt(text, 10) || 0 })} keyboardType="numeric" />
+        <Button title="Set desired speed margin" onPress={() => this.props.setDesiredSpeedMargin(this.state.desiredSpeedMargin)} />
       </View>
     )
   }
@@ -83,6 +89,6 @@ class Settings extends React.Component<Props, ComponentState> {
   }
 }
 
-const mapStateToProps = (state: StateType) => ({ displayType: state.settings.displayType, devices: state.bluetooth.devices, selectedDevice: state.bluetooth.selectedDevice })
+const mapStateToProps = (state: StateType) => ({ displayType: state.settings.displayType, devices: state.bluetooth.devices, selectedDevice: state.bluetooth.selectedDevice, desiredSpeedMargin: state.settings.desiredSpeedMargin })
 
-export default connect(mapStateToProps, { changeDisplayType, selectDevice })(Settings)
+export default connect(mapStateToProps, { changeDisplayType, selectDevice, setDesiredSpeedMargin })(Settings)

@@ -11,3 +11,9 @@ export const setDesiredSpeed = (desiredSpeed: number) => ({
   type: SET_DESIRED_SPEED,
   desiredSpeed
 })
+
+export const SET_DESIRED_SPEED_MARGIN = 'SET_DESIRED_SPEED_MARGIN'
+export const setDesiredSpeedMargin = (desiredSpeedMargin: number) => ({
+  type: SET_DESIRED_SPEED_MARGIN,
+  desiredSpeedMargin
+})
