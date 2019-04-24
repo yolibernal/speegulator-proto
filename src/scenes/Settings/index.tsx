@@ -1,7 +1,7 @@
 import { connect } from 'react-redux'
 import React from 'react'
-import { View, Text, FlatList, Button, TextInput } from 'react-native'
-import { ListItem } from 'react-native-elements'
+import { View, Text, FlatList } from 'react-native'
+import { List, RadioButton, Divider, Subheading, TextInput } from 'react-native-paper'
 import styles from './styles'
 import { changeDisplayType, setDesiredSpeedMargin } from '../../actions/settings'
 import { StateType } from '../../reducers'
@@ -21,9 +21,6 @@ type Props = {
 }
 
 type ComponentState = {
-  displayType: {
-    selectedIndex: number
-  },
   desiredSpeedMargin: number
 }
 
@@ -32,19 +29,9 @@ class Settings extends React.Component<Props, ComponentState> {
     title: 'Settings'
   }
 
-  // TODO: combine with displayTypeButtons and map over
-  static indexToDisplayType = [
-    DisplayType.VIBRATION,
-    DisplayType.VOICE,
-    DisplayType.WEARABLE
-  ]
-
   constructor(props) {
     super(props)
     this.state = {
-      displayType: {
-        selectedIndex: 0
-      },
       desiredSpeedMargin: this.props.desiredSpeedMargin
     }
   }
@@ -53,39 +40,66 @@ class Settings extends React.Component<Props, ComponentState> {
     const displayTypeButtons = ['Vibration', 'Speech', 'Wearable']
     return (
       <View>
-        <Text>These will be the settings!</Text>
-        <Text>Unit (kmh, mph, m/s)</Text>
-        <Text>Display (device vibration, wearable display, voice command)</Text>
-        <Text>Wearable Display (connect wearable)</Text>
-        <Text>Voice Display (voice type, commands)</Text>
-        <Text>Vibration Display (vibration pattern)</Text>
-        <ListItem
-          title="Display type"
-          buttonGroup={{
-            onPress: selectedIndex => this.handleDisplayTypeUpdate(selectedIndex),
-            selectedIndex: Settings.indexToDisplayType.indexOf(this.props.displayType),
-            buttons: displayTypeButtons,
-            containerStyle: styles.displayTypeContainer,
-            buttonStyle: styles.displayTypeButton,
-            textStyle: styles.displayTypeText
-          }}
-        />
-        <FlatList data={this.props.devices} renderItem={({ item }: { item: any }) => <Button key={item.id} title={item.name || 'Unnamed device'} onPress={() => this.props.selectDevice(item.id)}/>} />
-        <Text>Selected device id {this.props.selectedDevice}</Text>
-        <TextInput value={`${this.state.desiredSpeedMargin || ''}`} style={styles.desiredSpeedMarginInput} onChangeText={text => this.setState({ desiredSpeedMargin: Number.parseInt(text, 10) || 0 })} keyboardType="numeric" />
-        <Button title="Set desired speed margin" onPress={() => this.props.setDesiredSpeedMargin(this.state.desiredSpeedMargin)} />
-      </View>
+        {/*
+          TODO: setting ideas
+          Unit (kmh, mph, m/s)
+          Wearable Display (connect wearable)
+          Voice Display (voice type, commands)
+          Vibration Display (vibration pattern)
+        */}
+
+        <List.Section>
+          <List.Subheader>Display type</List.Subheader>
+          <RadioButton.Group
+            onValueChange={selectedDisplayType => this.props.changeDisplayType(selectedDisplayType)}
+            value={this.props.displayType}
+          >
+            <View style={styles.radioButtonItem}>
+              <RadioButton value={DisplayType.VIBRATION} />
+              <Text>Vibration</Text>
+            </View>
+            <View style={styles.radioButtonItem}>
+              <RadioButton value={DisplayType.VOICE} />
+              <Text>Voice</Text>
+            </View>
+            <View style={styles.radioButtonItem}>
+              <RadioButton value={DisplayType.WEARABLE} />
+              <Text>Wearable</Text>
+            </View>
+          </RadioButton.Group>
+        </List.Section>
+
+        {this.renderConnectWearable()}
+
+        <List.Section>
+          <List.Subheader>Desired speed margin</List.Subheader>
+          <TextInput value={`${this.state.desiredSpeedMargin || ''}`} onChangeText={text => this.setState({ desiredSpeedMargin: Number.parseInt(text, 10) || 0 })} onBlur={() => this.props.setDesiredSpeedMargin(this.state.desiredSpeedMargin)} keyboardType="numeric" />
+        </List.Section>
+      </View >
     )
   }
 
-  handleDisplayTypeUpdate(selectedIndex) {
-    this.setState({
-      displayType: {
-        selectedIndex
-      }
-    })
-    const newDisplayType = Settings.indexToDisplayType[selectedIndex]
-    this.props.changeDisplayType(newDisplayType)
+  renderConnectWearable() {
+    if (!(this.props.displayType === DisplayType.WEARABLE)) return
+    return (
+      <List.Accordion title={'Connect wearable'}>
+        <Subheading>Found devices:</Subheading>
+        <FlatList
+          // TODO: enable data={this.props.devices}
+          data={[{ id: '12345', name: 'TECO Wearble 1' }, { id: '67890', name: 'TECO Wearble 2' }]}
+          renderItem={
+            ({ item }: { item: any }) =>
+              <List.Item
+                title={item.name || 'Unnamed device'}
+                onPress={() => this.props.selectDevice(item.id)}
+                key={item.id}
+              />
+          }
+        />
+        <Divider />
+        <Text>Selected device id: {this.props.selectedDevice}</Text>
+      </List.Accordion>
+    )
   }
 }
 

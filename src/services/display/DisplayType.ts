@@ -1,5 +1,5 @@
 export enum DisplayType {
-  VOICE,
-  VIBRATION,
-  WEARABLE
+  VOICE = 'VOICE',
+  VIBRATION = 'VIBRATION',
+  WEARABLE = 'WEARABLE'
 }
