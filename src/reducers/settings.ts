@@ -12,7 +12,7 @@ type SettingsState = {
 
 const initialState: SettingsState = {
   displayType: DisplayType.VIBRATION,
-  desiredSpeed: 8,
+  desiredSpeed: 0,
   desiredSpeedMargin: 1
 }
 

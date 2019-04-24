@@ -5,7 +5,7 @@ import numeral from 'numeral'
 import { StateType } from '../../../reducers'
 import { Text, View } from 'react-native'
 import { startNextNavigationStep } from '../../../actions/maps'
-import { Button } from 'react-native-elements'
+import { Button } from 'react-native-paper'
 
 type Props = {
   distanceToNextManeuver,
@@ -49,7 +49,11 @@ class NavigationBanner extends React.PureComponent<Props, ComponentState> {
       <View>
         <Text>{distanceToNextManeuverFormatted} until {type} {modifier}</Text>
         <Text>{instruction} // {voiceInstructions.announcement}</Text>
-        <Button title={'Next step'} onPress={() => this.props.startNextNavigationStep()} />
+        <Button
+          onPress={() => this.props.startNextNavigationStep()}
+        >
+          Next step
+        </Button>
       </View>
     )
   }

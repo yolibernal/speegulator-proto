@@ -3,7 +3,7 @@ import React from 'react'
 import MapboxGL from '@mapbox/react-native-mapbox-gl'
 import { View, Text } from 'react-native'
 import styles from './styles'
-import { Button } from 'react-native-elements'
+import { Button } from 'react-native-paper'
 import { selectRoute, fetchDirections } from '../../actions/maps'
 import * as turfHelpers from '@turf/helpers'
 import { getGeom } from '@turf/invariant'
@@ -79,11 +79,11 @@ class RouteMap extends React.Component<Props, ComponentState> {
           </MapboxGL.ShapeSource>
         </MapboxGL.MapView>
         <View style={styles.footer}>
-          <Text>
-            Selected waypoints:
-            {this.state.selectedWaypoints.features.map(feature => getGeom(feature).coordinates)}
-          </Text>
-          <Button title="Select Route" onPress={() => this.handleSelectRoute()} />
+          <Button
+            onPress={() => this.handleSelectRoute()}
+          >
+            Start navigation
+          </Button>
         </View>
       </View>
     )

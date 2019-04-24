@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
 import { NavigationScreenOptions, NavigationScreenProps } from 'react-navigation'
 import { connect } from 'react-redux'
-import { View, TextInput } from 'react-native'
-import { Button } from 'react-native-elements'
+import { View } from 'react-native'
+import { TextInput, Button } from 'react-native-paper'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 import styles from './styles'
 import { StateType } from '../../reducers'
@@ -18,20 +18,14 @@ interface ComponentState {
 }
 class Home extends Component<Props, ComponentState> {
   static navigationOptions = ({ navigation }: NavigationScreenProps): NavigationScreenOptions => ({
-    title: 'Speegulator Prototype',
+    title: '',
     headerRight: (
       <Button
-        title=""
-        icon={
-          <Icon
-            name="settings"
-            size={30}
-            color="white"
-          />
-        }
         onPress={() => navigation.navigate('Settings')}
-        buttonStyle={styles.settingsButton}
-      />
+        icon={'settings'}
+      >
+        Settings
+      </Button>
     )
   })
 
@@ -45,21 +39,19 @@ class Home extends Component<Props, ComponentState> {
   render() {
     return (
       <View style={styles.container}>
-        <TextInput value={`${this.state.desiredSpeed || ''}`} style={styles.speedInput} onChangeText={text => this.setState({ desiredSpeed: Number.parseInt(text, 10) || 0 })} keyboardType="numeric" />
-        <Button title="Set desired speed" onPress={() => this.props.setDesiredSpeed(this.state.desiredSpeed)} />
-
+        <TextInput
+          label={'Desired speed'}
+          value={`${this.state.desiredSpeed || ''}`}
+          onChangeText={text => this.setState({ desiredSpeed: Number.parseInt(text, 10) || 0 })} keyboardType="numeric"
+          onBlur={() => this.props.setDesiredSpeed(this.state.desiredSpeed)}
+          style={styles.speedInput}
+        />
         <Button
-        title="Select route"
-        icon={
-          <Icon
-            name="map"
-            size={30}
-            color="white"
-          />
-        }
-        onPress={() => this.props.navigation.navigate('RouteMap')}
-        buttonStyle={styles.settingsButton}
-      />
+          onPress={() => this.props.navigation.navigate('RouteMap')}
+          style={styles.selectRouteButton}
+        >
+          Next
+        </Button>
       </View>
     )
   }
