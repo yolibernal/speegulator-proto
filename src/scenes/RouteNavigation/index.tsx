@@ -64,7 +64,7 @@ class RouteNavigation extends React.PureComponent<Props, ComponentState> {
     const { distanceToNextManeuver, nextManeuver, routeProgress } = this.props
 
     // TODO: This is sometimes true on non-emulator => fix!
-    return this.renderPropertiesMissing({ nextManeuver, routeProgress: null })
+    if (!nextManeuver || !routeProgress) return this.renderPropertiesMissing({ nextManeuver, routeProgress })
 
     return (
       <View style={styles.container}>
