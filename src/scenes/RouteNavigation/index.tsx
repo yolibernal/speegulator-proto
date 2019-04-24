@@ -63,7 +63,8 @@ class RouteNavigation extends React.PureComponent<Props, ComponentState> {
 
     const { distanceToNextManeuver, nextManeuver, routeProgress } = this.props
 
-    if (!nextManeuver || !routeProgress) return this.renderPropertiesMissing()
+    // TODO: This is sometimes true on non-emulator => fix!
+    return this.renderPropertiesMissing({ nextManeuver, routeProgress: null })
 
     return (
       <View style={styles.container}>
@@ -91,7 +92,9 @@ class RouteNavigation extends React.PureComponent<Props, ComponentState> {
     )
   }
 
-  renderPropertiesMissing() {
+  renderPropertiesMissing({ ...args }) {
+    console.warn('Properties missing:\n')
+    Object.keys(args).forEach(key => console.warn(`${key}: ${!!args[key]}\n`))
     return (
       <View>
         <Text>Required navigation properties are missing :(</Text>
