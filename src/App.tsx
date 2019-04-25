@@ -4,7 +4,8 @@ import configs from '../configs'
 
 import Home from './scenes/Home'
 import React from 'react'
-import { Provider } from 'react-redux'
+import { Provider as StoreProvider } from 'react-redux'
+import { Provider as PaperProvider } from 'react-native-paper'
 import { createStore, applyMiddleware } from 'redux'
 import GeolocationService from './services/geolocation/GeolocationService'
 import rootReducer from './reducers'
@@ -12,6 +13,8 @@ import Settings from './scenes/Settings'
 import RouteMap from './scenes/RouteMap'
 import thunkMiddleware from 'redux-thunk'
 import { nextStepInitiator } from './middleware/maps'
+
+import theme from './theme'
 
 import MapboxGL from '@mapbox/react-native-mapbox-gl'
 import RouteNavigation from './scenes/RouteNavigation'
@@ -42,10 +45,12 @@ MapboxGL.setAccessToken(configs.mapbox.accessToken)
 export default class App extends React.Component {
   render() {
     return (
-      <Provider store={store}>
-        <GeolocationService />
-        <AppContainer />
-      </Provider>
+      <StoreProvider store={store}>
+        <PaperProvider theme={theme}>
+          <GeolocationService />
+          <AppContainer />
+        </PaperProvider>
+      </StoreProvider>
     )
   }
 }

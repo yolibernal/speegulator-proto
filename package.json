@@ -21,7 +21,6 @@
     "react": "16.6.3",
     "react-native": "^0.57.8",
     "react-native-ble-plx": "^1.0.1",
-    "react-native-elements": "^1.0.0-beta7",
     "react-native-gesture-handler": "^1.0.12",
     "react-native-paper": "^2.15.2",
     "react-native-tts": "^2.0.0",

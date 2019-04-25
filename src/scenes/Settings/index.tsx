@@ -7,6 +7,7 @@ import { changeDisplayType, setDesiredSpeedMargin } from '../../actions/settings
 import { StateType } from '../../reducers'
 import { selectDevice } from '../../actions/bluetooth'
 import { DisplayType } from '../../services/display/DisplayType'
+import { RadioButtonItem } from './components/RadioButtonItem'
 // NOTE: convert services to renderless components? https://kyleshevlin.com/renderless-components
 
 type Props = {
@@ -54,18 +55,9 @@ class Settings extends React.Component<Props, ComponentState> {
             onValueChange={selectedDisplayType => this.props.changeDisplayType(selectedDisplayType)}
             value={this.props.displayType}
           >
-            <View style={styles.radioButtonItem}>
-              <RadioButton value={DisplayType.VIBRATION} />
-              <Text>Vibration</Text>
-            </View>
-            <View style={styles.radioButtonItem}>
-              <RadioButton value={DisplayType.VOICE} />
-              <Text>Voice</Text>
-            </View>
-            <View style={styles.radioButtonItem}>
-              <RadioButton value={DisplayType.WEARABLE} />
-              <Text>Wearable</Text>
-            </View>
+            <RadioButtonItem value={DisplayType.VIBRATION} label={'Vibration'} />
+            <RadioButtonItem value={DisplayType.VOICE} label={'Voice'} />
+            <RadioButtonItem value={DisplayType.WEARABLE} label={'Wearable'} />
           </RadioButton.Group>
         </List.Section>
 
@@ -82,8 +74,8 @@ class Settings extends React.Component<Props, ComponentState> {
   renderConnectWearable() {
     if (!(this.props.displayType === DisplayType.WEARABLE)) return
     return (
-      <List.Accordion title={'Connect wearable'}>
-        <Subheading>Found devices:</Subheading>
+      <List.Section>
+        <List.Subheader>Connect wearable</List.Subheader>
         <FlatList
           // TODO: enable data={this.props.devices}
           data={[{ id: '12345', name: 'TECO Wearble 1' }, { id: '67890', name: 'TECO Wearble 2' }]}
@@ -97,8 +89,8 @@ class Settings extends React.Component<Props, ComponentState> {
           }
         />
         <Divider />
-        <Text>Selected device id: {this.props.selectedDevice}</Text>
-      </List.Accordion>
+        <List.Item title={`Selected device id: ${this.props.selectedDevice}`} />
+      </List.Section>
     )
   }
 }
