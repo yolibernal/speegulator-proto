@@ -1,12 +1,11 @@
 import { connect } from 'react-redux'
 import React from 'react'
 import MapboxGL from '@mapbox/react-native-mapbox-gl'
-import { View, Text } from 'react-native'
+import { View } from 'react-native'
 import styles from './styles'
 import { Button } from 'react-native-paper'
 import { selectRoute, fetchDirections } from '../../actions/maps'
 import * as turfHelpers from '@turf/helpers'
-import { getGeom } from '@turf/invariant'
 import theme from '../../theme'
 // import locationIcon from '../../assets/location_icon.png'
 /*
