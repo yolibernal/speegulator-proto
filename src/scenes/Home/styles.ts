@@ -9,8 +9,5 @@ export default StyleSheet.create({
   speedInput: {
     width: 300,
     backgroundColor: 'transparent'
-  },
-  selectRouteButton: {
-
   }
 })

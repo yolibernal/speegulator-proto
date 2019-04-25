@@ -11,6 +11,7 @@ import { Maneuver, getNextManeuver } from '../../reducers/maps'
 import { getDisplay } from '../../reducers/settings'
 import isEqual from 'lodash.isequal'
 import { Display } from '../../services/display/Display'
+import { FetchingIndicator } from './components/FetchingIndicator'
 
 type Props = {
   isFetching: boolean,
@@ -79,8 +80,8 @@ class RouteNavigation extends React.PureComponent<Props, ComponentState> {
 
   renderFetching() {
     return (
-      <View>
-        <Text>Fetching directions...</Text>
+      <View style={styles.container}>
+        <FetchingIndicator />
       </View>
     )
   }

@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
 import { NavigationScreenOptions, NavigationScreenProps } from 'react-navigation'
 import { connect } from 'react-redux'
-import { View } from 'react-native'
-import { TextInput, Button } from 'react-native-paper'
+import { View, Text } from 'react-native'
+import { TextInput, Button, ActivityIndicator } from 'react-native-paper'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 import styles from './styles'
 import { StateType } from '../../reducers'
@@ -48,7 +48,6 @@ class Home extends Component<Props, ComponentState> {
         />
         <Button
           onPress={() => this.props.navigation.navigate('RouteMap')}
-          style={styles.selectRouteButton}
         >
           Next
         </Button>
