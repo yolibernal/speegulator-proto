@@ -4,6 +4,7 @@ import MapboxGL from '@mapbox/react-native-mapbox-gl'
 import React from 'react'
 import { StateType } from '../../../reducers'
 import styles from '../styles'
+import theme from '../../../theme'
 
 type Props = {
   routeGeometry,
@@ -15,12 +16,12 @@ type ComponentState = {}
 
 const layerStyles = MapboxGL.StyleSheet.create({
   route: {
-    lineColor: 'red',
+    lineColor: theme.colors.accent,
     lineWidth: 3,
     lineOpacity: 0.84
   },
   routeProgress: {
-    lineColor: 'blue',
+    lineColor: theme.colors.primary,
     lineWidth: 5,
     lineOpacity: 0.84
   }
