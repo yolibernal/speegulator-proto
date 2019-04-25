@@ -1,8 +1,18 @@
 import { StyleSheet } from 'react-native'
 
 export default StyleSheet.create({
-  displayTypeButton: {
-
+  desiredSpeedMarginContainer: {
+    minHeight: 48,
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    paddingHorizontal: 8,
+  },
+  desiredSpeedMarginSlider: {
+    flex: 0.9
+  },
+  desiredSpeedMarginLabel: {
+    flex: 0.1
   },
   displayTypeText: {
     fontSize: 12

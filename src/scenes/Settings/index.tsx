@@ -1,6 +1,6 @@
 import { connect } from 'react-redux'
 import React from 'react'
-import { View, Text, FlatList } from 'react-native'
+import { View, FlatList, Slider, Text } from 'react-native'
 import { List, RadioButton, Divider, Subheading, TextInput } from 'react-native-paper'
 import styles from './styles'
 import { changeDisplayType, setDesiredSpeedMargin } from '../../actions/settings'
@@ -8,6 +8,7 @@ import { StateType } from '../../reducers'
 import { selectDevice } from '../../actions/bluetooth'
 import { DisplayType } from '../../services/display/DisplayType'
 import { RadioButtonItem } from './components/RadioButtonItem'
+import theme from '../../theme'
 // NOTE: convert services to renderless components? https://kyleshevlin.com/renderless-components
 
 type Props = {
@@ -65,7 +66,21 @@ class Settings extends React.Component<Props, ComponentState> {
 
         <List.Section>
           <List.Subheader>Desired speed margin</List.Subheader>
-          <TextInput value={`${this.state.desiredSpeedMargin || ''}`} onChangeText={text => this.setState({ desiredSpeedMargin: Number.parseInt(text, 10) || 0 })} onBlur={() => this.props.setDesiredSpeedMargin(this.state.desiredSpeedMargin)} keyboardType="numeric" />
+          <View style={styles.desiredSpeedMarginContainer}>
+            <Slider
+              minimumValue={0}
+              maximumValue={5}
+              minimumTrackTintColor={theme.colors.primary}
+              maximumTrackTintColor={theme.colors.accent}
+              thumbTintColor={theme.colors.primary}
+              step={0.5}
+              value={this.props.desiredSpeedMargin}
+              onValueChange={value => this.setState({ desiredSpeedMargin: value })}
+              onSlidingComplete={() => this.props.setDesiredSpeedMargin(this.state.desiredSpeedMargin)}
+              style={styles.desiredSpeedMarginSlider}
+            />
+            <Text style={styles.desiredSpeedMarginLabel}>{this.state.desiredSpeedMargin}</Text>
+          </View>
         </List.Section>
       </View >
     )
