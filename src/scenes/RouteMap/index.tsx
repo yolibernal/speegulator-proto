@@ -7,6 +7,7 @@ import { Button } from 'react-native-paper'
 import { selectRoute, fetchDirections } from '../../actions/maps'
 import * as turfHelpers from '@turf/helpers'
 import { getGeom } from '@turf/invariant'
+import theme from '../../theme'
 // import locationIcon from '../../assets/location_icon.png'
 /*
 event example
@@ -22,13 +23,18 @@ event example
 */
 
 const mglStyles = MapboxGL.StyleSheet.create({
-  icon: {
+  waypointIcon: {
     iconAllowOverlap: true,
     iconIgnorePlacement: true,
     iconSize: 1,
     iconOffset: [0, 5],
     textField: '{waypointNumber}',
-    textSize: 14
+    textSize: 14,
+    textColor: 'white'
+  },
+  waypointCircle: {
+    circleRadius: 10,
+    circleColor: theme.colors.primary
   }
 })
 
@@ -66,15 +72,20 @@ class RouteMap extends React.Component<Props, ComponentState> {
           onPress={event => this.onMapPress(event)}
         >
           <MapboxGL.ShapeSource
-            id="symbolLocationSource"
+            id={'waypointSource'}
             hitbox={{ width: 20, height: 20 }}
             onPress={this.onSourceLayerPress}
             shape={this.state.selectedWaypoints}
           >
             <MapboxGL.SymbolLayer
-              id="symbolLocationSymbols"
+              id={'waypointSymbolLayer'}
               minZoomLevel={1}
-              style={mglStyles.icon}
+              style={mglStyles.waypointIcon}
+            />
+            <MapboxGL.CircleLayer
+              id={'waypointCircleLayer'}
+              belowLayerID={'waypointSymbolLayer'}
+              style={mglStyles.waypointCircle}
             />
           </MapboxGL.ShapeSource>
         </MapboxGL.MapView>
