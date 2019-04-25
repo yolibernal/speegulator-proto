@@ -6,9 +6,10 @@ export default StyleSheet.create({
     flexDirection: 'column'
   },
   map: {
-    flex: 7
+    flex: 9
   },
   footer: {
-    flex: 1
+    flex: 1,
+    justifyContent: 'center'
   }
 })
