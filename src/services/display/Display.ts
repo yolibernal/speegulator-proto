@@ -1,3 +1,4 @@
+// TODO: display as components?
 export interface Display {
   /* TODO: maybe intensity parameter, could be
     * vibration duration for DeviceVibration
