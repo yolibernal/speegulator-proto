@@ -6,20 +6,11 @@ import { StateType } from '../../../reducers'
 import { Text, View } from 'react-native'
 import { startNextNavigationStep } from '../../../actions/maps'
 import { Button } from 'react-native-paper'
+import { Maneuver } from '../../../reducers/maps'
 
 type Props = {
   distanceToNextManeuver,
-  maneuver: {
-    // tslint:disable-next-line: no-reserved-keywords
-    type: string,
-    modifier: string,
-    instruction: string,
-    voiceInstructions: {
-      distanceAlongGeometry:number,
-      announcement: string,
-      ssmlAnnouncement: string
-    }
-  },
+  maneuver: Maneuver
   startNextNavigationStep
 }
 
@@ -44,7 +35,8 @@ class NavigationBanner extends React.PureComponent<Props, ComponentState> {
     const unit = `${!displayInMeters ? 'k' : ''}m`
     const distanceToNextManeuverFormatted = `${numberFormatted} ${unit}`
 
-    const { type, modifier, instruction, voiceInstructions } = this.props.maneuver
+    // TODO: show banner instructions or regular instructions? Contradict each other
+    const { type, modifier, instruction, voiceInstructions, bannerInstructions } = this.props.maneuver
     return (
       <View>
         <Text>{distanceToNextManeuverFormatted} until {type} {modifier}</Text>

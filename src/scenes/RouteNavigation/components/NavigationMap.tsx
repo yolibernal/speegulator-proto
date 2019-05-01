@@ -30,9 +30,7 @@ const layerStyles = MapboxGL.StyleSheet.create({
 const mglStyles = MapboxGL.StyleSheet.create({
   routePositionCircle: {
     circleRadius: 5,
-    circleColor: 'black',
-    circleStrokeWidth: 1,
-    circleStrokeColor: '#c6d2e1'
+    circleColor: theme.colors.primary
   }
 })
 

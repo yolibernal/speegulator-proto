@@ -112,7 +112,8 @@ export type Maneuver = {
     distanceAlongGeometry: number
     announcement: string
     ssmlAnnouncement: string
-  }
+  },
+  bannerInstructions
 }
 
 export const getNextManeuver = createSelector(
@@ -121,13 +122,13 @@ export const getNextManeuver = createSelector(
     if (!currentNavigationStep) return null
 
     const { type, modifier, instruction } = currentNavigationStep.maneuver
-    // TODO: use bannerInstructions?
     const { voiceInstructions, bannerInstructions } = currentNavigationStep
     const nextManeuver = {
       type,
       modifier,
       instruction,
-      voiceInstructions: voiceInstructions[0]
+      voiceInstructions: voiceInstructions[0],
+      bannerInstructions: bannerInstructions[0]
     }
     return nextManeuver
   }
