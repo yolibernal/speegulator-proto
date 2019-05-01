@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 import _ from 'lodash'
 
 import { BleManager } from 'react-native-ble-plx'
+import bleManager from './BleManager'
 import { addDevice } from '../../actions/bluetooth'
 import { StateType } from '../../reducers'
 
@@ -14,13 +15,6 @@ type Props = {
 type ComponentState = {}
 
 class BluetoothScanner extends React.Component<Props, ComponentState> {
-
-  private bleManager: BleManager
-
-  constructor(props) {
-    super(props)
-    this.bleManager = new BleManager()
-  }
 
   render() {
     return null
@@ -36,7 +30,7 @@ class BluetoothScanner extends React.Component<Props, ComponentState> {
   // }
 
   private startDeviceScan() {
-    this.bleManager.startDeviceScan(
+    bleManager.startDeviceScan(
       null,
       {},
       _.throttle((error, device) => {

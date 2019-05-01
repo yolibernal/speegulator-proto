@@ -1,19 +1,13 @@
 import { store } from '../../App'
-import { BleManager } from 'react-native-ble-plx'
+import bleManager from './BleManager'
 
 // TODO: move logic back to bluetooth react component?
 // TODO: alternative create Higher Order Component withBluetoothConnection, that enables to write data?
 export default class BluetoothCommunicator {
 
-  private bleManager: BleManager
-
-  constructor() {
-    this.bleManager = new BleManager()
-  }
-
   private async connectToDevice(deviceIdentifier: string): Promise<void> {
     try {
-      await this.bleManager.connectToDevice(
+      await bleManager.connectToDevice(
         deviceIdentifier
       )
     } catch (error) {
@@ -32,13 +26,13 @@ export default class BluetoothCommunicator {
     try {
       const selectedDevice = store.getState().bluetooth.selectedDevice
       // discovering of services needed
-      await this.bleManager.discoverAllServicesAndCharacteristicsForDevice(selectedDevice)
+      await bleManager.discoverAllServicesAndCharacteristicsForDevice(selectedDevice)
 
       const serviceUUID = '713d0000-503e-4c75-ba94-3148f18d941e'
       const characteristicUUID = '713d0003-503e-4c75-ba94-3148f18d941e'
       const base64Value = '/////w=='
 
-      await this.bleManager.writeCharacteristicWithResponseForDevice(
+      await bleManager.writeCharacteristicWithResponseForDevice(
         selectedDevice,
         serviceUUID,
         characteristicUUID,
