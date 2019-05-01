@@ -92,8 +92,8 @@ class Settings extends React.Component<Props, ComponentState> {
       <List.Section>
         <List.Subheader>Connect wearable</List.Subheader>
         <FlatList
-          // TODO: enable data={this.props.devices}
-          data={[{ id: '12345', name: 'TECO Wearble 1' }, { id: '67890', name: 'TECO Wearble 2' }]}
+          data={this.props.devices}
+          // data={[{ id: '12345', name: 'TECO Wearble 1' }, { id: '67890', name: 'TECO Wearble 2' }]}
           renderItem={
             ({ item }: { item: any }) =>
               <List.Item

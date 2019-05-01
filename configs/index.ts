@@ -23,6 +23,8 @@ const voiceCommandDisplay = {
   duckingEnabled: true
 }
 
+const wearableDisplay = {}
+
 const configs = {
   name,
   mapbox: {
@@ -36,7 +38,8 @@ const configs = {
   },
   display: {
     vibrationDisplay,
-    voiceCommandDisplay
+    voiceCommandDisplay,
+    wearableDisplay
   }
 }
 

@@ -3,7 +3,7 @@ import BluetoothCommunicator from '../bluetooth/BluetoothCommunicator'
 
 // TODO: alternatively the display could import the store and dispatch vibration update actions
 // => Bluetooth component listens
-export class VoiceCommandDisplay implements Display {
+export class WearableDisplay implements Display {
 
   private bluetoothCommunicator: BluetoothCommunicator
 
@@ -21,4 +21,7 @@ export class VoiceCommandDisplay implements Display {
     this.bluetoothCommunicator.writeToWearable()
   }
 
+  async maneuver(options: any): Promise<void> {
+    // TODO: implement maneuver handling
+  }
 }

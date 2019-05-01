@@ -26,7 +26,7 @@ const middlewares = [
 ]
 const enhancer = composeWithDevTools({})(applyMiddleware(...middlewares))
 
-const store = createStore(
+export const store = createStore(
   rootReducer,
   enhancer
 )

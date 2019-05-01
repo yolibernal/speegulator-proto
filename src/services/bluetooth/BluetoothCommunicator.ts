@@ -1,5 +1,3 @@
-import pino from 'pino'
-import Logger from '../../Logger'
 import { store } from '../../App'
 import { BleManager } from 'react-native-ble-plx'
 
@@ -8,11 +6,9 @@ import { BleManager } from 'react-native-ble-plx'
 export default class BluetoothCommunicator {
 
   private bleManager: BleManager
-  private logger: pino.Logger
 
   constructor() {
     this.bleManager = new BleManager()
-    this.logger = Logger.getLoggerForClass(this)
   }
 
   private async connectToDevice(deviceIdentifier: string): Promise<void> {
@@ -21,7 +17,7 @@ export default class BluetoothCommunicator {
         deviceIdentifier
       )
     } catch (error) {
-      this.logger.warn('ERROR while connecting:', error)
+      console.warn('ERROR while connecting:', error)
     }
   }
 
@@ -49,7 +45,7 @@ export default class BluetoothCommunicator {
         base64Value
       )
     } catch (error) {
-      this.logger.warn('ERROR while trying to vibrate wearable:', error)
+      console.warn('ERROR while trying to vibrate wearable:', error)
     }
   }
 }
