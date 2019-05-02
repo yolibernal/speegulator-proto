@@ -5,6 +5,16 @@ export default StyleSheet.create({
     flex: 1,
     flexDirection: 'column'
   },
+  row: {
+    minHeight: 48,
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 8,
+  },
+  label: {
+    flex: 1,
+    flexWrap: 'wrap',
+  },
   map: {
     flex: 9
   },

@@ -1,12 +1,14 @@
 import { connect } from 'react-redux'
 import React from 'react'
 import MapboxGL from '@mapbox/react-native-mapbox-gl'
-import { View } from 'react-native'
+import { View, Text } from 'react-native'
 import styles from './styles'
-import { Button } from 'react-native-paper'
+import { Button, Checkbox } from 'react-native-paper'
 import { selectRoute, fetchDirections } from '../../actions/maps'
 import * as turfHelpers from '@turf/helpers'
 import theme from '../../theme'
+import { NavigationScreenProps, NavigationScreenOptions } from 'react-navigation'
+import { StateType } from '../../reducers'
 // import locationIcon from '../../assets/location_icon.png'
 /*
 event example
@@ -37,26 +39,51 @@ const mglStyles = MapboxGL.StyleSheet.create({
   }
 })
 
-type Props = {
+interface Props extends NavigationScreenProps {
   navigation,
   selectRoute,
   fetchDirections
+  currentPosition: turfHelpers.Feature<turfHelpers.Point>
 }
 
 type ComponentState = {
   selectedWaypoints: turfHelpers.FeatureCollection<turfHelpers.Point>
+  startFromCurrentPosition: boolean
 }
 
 class RouteMap extends React.Component<Props, ComponentState> {
-  static navigationOptions = {
-    title: 'RouteMap'
-  }
+  static navigationOptions = ({ navigation }: NavigationScreenProps): NavigationScreenOptions => ({
+    title: '',
+    headerRight: (
+      <View style={styles.row}>
+        <Text style={styles.label}>Start from current position</Text>
+        <Checkbox
+          onPress={navigation.getParam('toggleStartFromCurrentPosition')}
+          status={navigation.getParam('startFromCurrentPosition') ? 'checked' : 'unchecked'}
+        />
+      </View>
+    )
+  })
 
   constructor(props) {
     super(props)
     this.state = {
-      selectedWaypoints: turfHelpers.featureCollection([])
+      selectedWaypoints: turfHelpers.featureCollection([]),
+      startFromCurrentPosition: true
     }
+  }
+
+  componentDidMount() {
+    this.props.navigation.setParams({
+      startFromCurrentPosition: this.state.startFromCurrentPosition,
+      toggleStartFromCurrentPosition: () => {
+        this.setState((state) => {
+          const newState = { startFromCurrentPosition: !state.startFromCurrentPosition }
+          this.props.navigation.setParams(newState)
+          return newState
+        })
+      }
+    })
   }
 
   render() {
@@ -122,9 +149,19 @@ class RouteMap extends React.Component<Props, ComponentState> {
 
   handleSelectRoute() {
     const { selectedWaypoints } = this.state
+
+    let waypointsForNavigation: turfHelpers.FeatureCollection<turfHelpers.Point>
+    if (this.state.startFromCurrentPosition) {
+      const selectedWaypointsCopy = Object.assign({}, this.state.selectedWaypoints)
+      const { currentPosition } = this.props
+      selectedWaypointsCopy.features.unshift(currentPosition)
+      waypointsForNavigation = selectedWaypointsCopy
+    } else {
+      waypointsForNavigation = selectedWaypoints
+    }
     // TODO: combine selectRoute and fetchDirections?
-    this.props.selectRoute(selectedWaypoints)
-    this.props.fetchDirections(selectedWaypoints)
+    this.props.selectRoute(waypointsForNavigation)
+    this.props.fetchDirections(waypointsForNavigation)
     this.setState(() => ({
       selectedWaypoints: turfHelpers.featureCollection([])
     }))
@@ -132,5 +169,6 @@ class RouteMap extends React.Component<Props, ComponentState> {
   }
 }
 
+const mapStateToProps = (state: StateType) => ({ currentPosition: state.geolocation.position })
 const mapDispatchToProps = { selectRoute, fetchDirections }
-export default connect(null, mapDispatchToProps)(RouteMap)
+export default connect(mapStateToProps, mapDispatchToProps)(RouteMap)

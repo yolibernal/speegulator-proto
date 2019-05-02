@@ -8,6 +8,7 @@
 * implement "run exact speed" feature ✅
 * implement units (kph, mph etc.)
 * improve UI
+* "start from current position" button
 
 # Test run
 

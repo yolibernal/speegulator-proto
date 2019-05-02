@@ -24,22 +24,21 @@ class BluetoothScanner extends React.Component<Props, ComponentState> {
     this.startDeviceScan()
   }
 
-  // async componentDidUpdate(prevProps) {
-  //   if (prevProps.selectedDevice === this.props.selectedDevice) return
-  //   await this.connectToDevice()
-  // }
-
   private startDeviceScan() {
-    bleManager.startDeviceScan(
-      null,
-      {},
-      _.throttle(
-        (error, device) => {
-          if (error) console.error(error)
-          this.props.addDevice(device)
-        },
-        500
-      ))
+    try {
+      bleManager.startDeviceScan(
+        null,
+        {},
+        _.throttle(
+          (error, device) => {
+            if (error) console.error(error)
+            this.props.addDevice(device)
+          },
+          500
+        ))
+    } catch (error) {
+      console.warn('Could not start device scan:', error)
+    }
   }
 }
 
