@@ -6,6 +6,7 @@ import { TextInput, Button } from 'react-native-paper'
 import styles from './styles'
 import { StateType } from '../../reducers'
 import { setDesiredSpeed } from '../../actions/settings'
+import BluetoothCommunicator from '../../services/bluetooth/BluetoothCommunicator'
 
 interface Props extends NavigationScreenProps {
   setDesiredSpeed
@@ -50,6 +51,10 @@ class Home extends Component<Props, ComponentState> {
         >
           Next
         </Button>
+        <Button onPress={async () => {
+          const bluetoothCommunicator = new BluetoothCommunicator()
+          await bluetoothCommunicator.sendTestVibrationToWearable()
+        }}>Vibrate</Button>
       </View>
     )
   }

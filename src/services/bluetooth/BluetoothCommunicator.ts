@@ -24,12 +24,10 @@ export default class BluetoothCommunicator {
     const selectedDevice = store.getState().bluetooth.selectedDevice
     await this.connectToDevice(selectedDevice)
     try {
-      const selectedDevice = store.getState().bluetooth.selectedDevice
       // discovering of services needed
       await bleManager.discoverAllServicesAndCharacteristicsForDevice(selectedDevice)
 
-      const serviceUUID = '713d0000-503e-4c75-ba94-3148f18d941e'
-      const characteristicUUID = '713d0003-503e-4c75-ba94-3148f18d941e'
+      const { serviceUuid: serviceUUID, characteristicUuid: characteristicUUID } = store.getState().settings
       const base64Value = '/////w=='
 
       await bleManager.writeCharacteristicWithResponseForDevice(

@@ -1,6 +1,7 @@
 import { connect } from 'react-redux'
 import React from 'react'
 import { View, FlatList, Slider, Text, KeyboardAvoidingView } from 'react-native'
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import { List, RadioButton, Divider, Subheading, TextInput } from 'react-native-paper'
 import styles from './styles'
 import { changeDisplayType, setDesiredSpeedMargin, setServiceUuid, setCharacteristicUuid } from '../../actions/settings'
@@ -48,7 +49,7 @@ class Settings extends React.Component<Props, ComponentState> {
 
   render() {
     return (
-      <KeyboardAvoidingView behavior={'position'}>
+      <KeyboardAwareScrollView>
         {/*
           TODO: setting ideas
           Unit (kmh, mph, m/s)
@@ -89,7 +90,7 @@ class Settings extends React.Component<Props, ComponentState> {
             <Text style={styles.desiredSpeedMarginLabel}>{this.state.desiredSpeedMargin}</Text>
           </View>
         </List.Section>
-      </KeyboardAvoidingView>
+      </KeyboardAwareScrollView>
     )
   }
 

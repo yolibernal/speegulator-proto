@@ -33,10 +33,13 @@ class BluetoothScanner extends React.Component<Props, ComponentState> {
     bleManager.startDeviceScan(
       null,
       {},
-      _.throttle((error, device) => {
-        if (error) console.error(error)
-        this.props.addDevice(device)
-      }))
+      _.throttle(
+        (error, device) => {
+          if (error) console.error(error)
+          this.props.addDevice(device)
+        },
+        500
+      ))
   }
 }
 
