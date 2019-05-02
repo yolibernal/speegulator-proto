@@ -19,5 +19,8 @@ export default StyleSheet.create({
   },
   radioButtonItem: {
     flexDirection: 'row'
+  },
+  input: {
+    backgroundColor: 'transparent'
   }
 })

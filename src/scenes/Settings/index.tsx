@@ -1,9 +1,9 @@
 import { connect } from 'react-redux'
 import React from 'react'
-import { View, FlatList, Slider, Text } from 'react-native'
+import { View, FlatList, Slider, Text, KeyboardAvoidingView } from 'react-native'
 import { List, RadioButton, Divider, Subheading, TextInput } from 'react-native-paper'
 import styles from './styles'
-import { changeDisplayType, setDesiredSpeedMargin } from '../../actions/settings'
+import { changeDisplayType, setDesiredSpeedMargin, setServiceUuid, setCharacteristicUuid } from '../../actions/settings'
 import { StateType } from '../../reducers'
 import { selectDevice } from '../../actions/bluetooth'
 import { DisplayType } from '../../services/display/DisplayType'
@@ -19,11 +19,17 @@ type Props = {
   devices,
   selectedDevice,
   setDesiredSpeedMargin,
-  desiredSpeedMargin
+  desiredSpeedMargin,
+  serviceUuid,
+  characteristicUuid,
+  setServiceUuid,
+  setCharacteristicUuid
 }
 
 type ComponentState = {
   desiredSpeedMargin: number
+  serviceUuid: string
+  characteristicUuid: string
 }
 
 class Settings extends React.Component<Props, ComponentState> {
@@ -34,14 +40,15 @@ class Settings extends React.Component<Props, ComponentState> {
   constructor(props) {
     super(props)
     this.state = {
-      desiredSpeedMargin: this.props.desiredSpeedMargin
+      desiredSpeedMargin: this.props.desiredSpeedMargin,
+      serviceUuid: this.props.serviceUuid,
+      characteristicUuid: this.props.characteristicUuid
     }
   }
 
   render() {
-    const displayTypeButtons = ['Vibration', 'Speech', 'Wearable']
     return (
-      <View>
+      <KeyboardAvoidingView behavior={'position'}>
         {/*
           TODO: setting ideas
           Unit (kmh, mph, m/s)
@@ -82,7 +89,7 @@ class Settings extends React.Component<Props, ComponentState> {
             <Text style={styles.desiredSpeedMarginLabel}>{this.state.desiredSpeedMargin}</Text>
           </View>
         </List.Section>
-      </View >
+      </KeyboardAvoidingView>
     )
   }
 
@@ -93,7 +100,7 @@ class Settings extends React.Component<Props, ComponentState> {
         <List.Subheader>Connect wearable</List.Subheader>
         <FlatList
           data={this.props.devices}
-          // data={[{ id: '12345', name: 'TECO Wearble 1' }, { id: '67890', name: 'TECO Wearble 2' }]}
+          // data={[{ id: '12345', name: 'TECO Wearable 1' }, { id: '67890', name: 'TECO Wearable 2' }]}
           renderItem={
             ({ item }: { item: any }) =>
               <List.Item
@@ -107,11 +114,26 @@ class Settings extends React.Component<Props, ComponentState> {
         />
         <Divider />
         <List.Item title={`Selected device id: ${this.props.selectedDevice}`} />
+        <Divider />
+        <TextInput
+          label={'Service UUID'}
+          value={`${this.state.serviceUuid || ''}`}
+          onChangeText={text => this.setState({ serviceUuid: text })}
+          onBlur={() => this.props.setServiceUuid(this.state.serviceUuid)}
+          style={styles.input}
+        />
+        <TextInput
+          label={'Characterstic UUID'}
+          value={`${this.state.characteristicUuid || ''}`}
+          onChangeText={text => this.setState({ characteristicUuid: text })}
+          onBlur={() => this.props.setCharacteristicUuid(this.state.characteristicUuid)}
+          style={styles.input}
+        />
       </List.Section>
     )
   }
 }
 
-const mapStateToProps = (state: StateType) => ({ displayType: state.settings.displayType, devices: state.bluetooth.devices, selectedDevice: state.bluetooth.selectedDevice, desiredSpeedMargin: state.settings.desiredSpeedMargin })
+const mapStateToProps = (state: StateType) => ({ displayType: state.settings.displayType, devices: state.bluetooth.devices, selectedDevice: state.bluetooth.selectedDevice, desiredSpeedMargin: state.settings.desiredSpeedMargin, serviceUuid: state.settings.serviceUuid, characteristicUuid: state.settings.characteristicUuid })
 
-export default connect(mapStateToProps, { changeDisplayType, selectDevice, setDesiredSpeedMargin })(Settings)
+export default connect(mapStateToProps, { changeDisplayType, selectDevice, setDesiredSpeedMargin, setServiceUuid , setCharacteristicUuid })(Settings)

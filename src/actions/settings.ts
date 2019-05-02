@@ -17,3 +17,15 @@ export const setDesiredSpeedMargin = (desiredSpeedMargin: number) => ({
   type: SET_DESIRED_SPEED_MARGIN,
   desiredSpeedMargin
 })
+
+export const SET_SERVICE_UUID = 'SET_SERVICE_UUID'
+export const setServiceUuid = (serviceUuid: string) => ({
+  type: SET_SERVICE_UUID,
+  serviceUuid
+})
+
+export const SET_CHARACTERISTIC_UUID = 'SET_CHARACTERISTIC_UUID'
+export const setCharacteristicUuid = (characteristicUuid: string) => ({
+  type: SET_CHARACTERISTIC_UUID,
+  characteristicUuid
+})
