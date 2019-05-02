@@ -15,20 +15,17 @@ export default class BluetoothCommunicator {
     }
   }
 
-  public writeToWearable() {
-    // TODO: do
-  }
-
-  // TODO: ugly
-  async sendTestVibrationToWearable(): Promise<any> {
-    const selectedDevice = store.getState().bluetooth.selectedDevice
-    await this.connectToDevice(selectedDevice)
+  public async writeToWearable(writeValue: string) {
     try {
-      // discovering of services needed
+      const selectedDevice = store.getState().bluetooth.selectedDevice
+      const deviceIsConnected = await bleManager.isDeviceConnected(selectedDevice)
+      if (!deviceIsConnected) await this.connectToDevice(selectedDevice)
+
+      // discovering of services has to be done before writing
       await bleManager.discoverAllServicesAndCharacteristicsForDevice(selectedDevice)
 
       const { serviceUuid: serviceUUID, characteristicUuid: characteristicUUID } = store.getState().settings
-      const base64Value = '/////w=='
+      const base64Value = writeValue
 
       await bleManager.writeCharacteristicWithResponseForDevice(
         selectedDevice,
@@ -37,7 +34,7 @@ export default class BluetoothCommunicator {
         base64Value
       )
     } catch (error) {
-      console.warn('ERROR while trying to vibrate wearable:', error)
+      console.warn('ERROR while trying write characteristic:', error)
     }
   }
 }

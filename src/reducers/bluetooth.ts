@@ -8,7 +8,7 @@ type BluetoothState = {
 // TODO: device type
 const initialState: BluetoothState = {
   devices: [],
-  selectedDevice: ''
+  selectedDevice: 'C9:B7:CB:3F:F6:CB'
 }
 
 const bluetooth = (state = initialState, action): BluetoothState => {

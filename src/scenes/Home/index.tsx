@@ -6,7 +6,8 @@ import { TextInput, Button } from 'react-native-paper'
 import styles from './styles'
 import { StateType } from '../../reducers'
 import { setDesiredSpeed } from '../../actions/settings'
-import BluetoothCommunicator from '../../services/bluetooth/BluetoothCommunicator'
+// TODO: remmove
+import { WearableDisplay } from '../../services/display/WearableDisplay'
 
 interface Props extends NavigationScreenProps {
   setDesiredSpeed
@@ -16,6 +17,9 @@ interface Props extends NavigationScreenProps {
 interface ComponentState {
   desiredSpeed: number
 }
+// TODO: remove
+const wearableDisplay = new WearableDisplay()
+
 class Home extends Component<Props, ComponentState> {
   static navigationOptions = ({ navigation }: NavigationScreenProps): NavigationScreenOptions => ({
     title: '',
@@ -51,10 +55,19 @@ class Home extends Component<Props, ComponentState> {
         >
           Next
         </Button>
+        {/* TODO: remove buttons */}
         <Button onPress={async () => {
-          const bluetoothCommunicator = new BluetoothCommunicator()
-          await bluetoothCommunicator.sendTestVibrationToWearable()
-        }}>Vibrate</Button>
+          await wearableDisplay.maneuver({ modifier: 'left' })
+        }}>Vibrate Left</Button>
+        <Button onPress={async () => {
+          await wearableDisplay.displayDecreaseSpeed()
+        }}>Vibrate Middle Left</Button>
+        <Button onPress={async () => {
+          await wearableDisplay.displayIncreaseSpeed()
+        }}>Vibrate Middle Right</Button>
+        <Button onPress={async () => {
+          await wearableDisplay.maneuver({ modifier: 'right' })
+        }}>Vibrate Right</Button>
       </View>
     )
   }

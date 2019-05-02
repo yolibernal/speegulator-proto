@@ -16,6 +16,7 @@
     "@turf/invariant": "^6.1.2",
     "@turf/line-slice": "^5.1.5",
     "@turf/nearest-point-on-line": "^6.0.2",
+    "buffer": "^5.2.1",
     "lodash.isequal": "^4.5.0",
     "numeral": "^2.0.6",
     "react": "16.6.3",
