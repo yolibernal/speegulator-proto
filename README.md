@@ -8,3 +8,11 @@
 * implement "run exact speed" feature ✅
 * implement units (kph, mph etc.)
 * improve UI
+
+# Test run
+
+* voiceInstruction undefined crash although Display was VibrationDisplay
+  * voiceInstruction sometimes empty => check
+* Trigger next step middleware not working
+* still sometimes no route progress
+* navigation map does sometimes not re-render when requesting directions again

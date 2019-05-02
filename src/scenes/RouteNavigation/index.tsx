@@ -12,6 +12,8 @@ import { getDisplay } from '../../reducers/settings'
 import isEqual from 'lodash.isequal'
 import { Display } from '../../services/display/Display'
 import { FetchingIndicator } from './components/FetchingIndicator'
+import configs from '../../../configs'
+import { startNextNavigationStep } from '../../actions/maps'
 
 type Props = {
   isFetching: boolean,
@@ -27,11 +29,12 @@ type Props = {
   display: Display
   desiredSpeed: number
   desiredSpeedMargin: number
+  startNextNavigationStep
 }
 
 type ComponentState = {}
 
-class RouteNavigation extends React.PureComponent<Props, ComponentState> {
+class RouteNavigation extends React.Component<Props, ComponentState> {
   static navigationOptions = {
     title: 'RouteNavigation'
   }
@@ -120,10 +123,15 @@ class RouteNavigation extends React.PureComponent<Props, ComponentState> {
     if (currentSpeed > (desiredSpeed + desiredSpeedMargin)) {
       await display.displayDecreaseSpeed()
     }
+
+    const { distanceToNextManeuver } = this.props
+    if (distanceToNextManeuver !== -1 && distanceToNextManeuver < configs.maps.nextStepDistanceThreshold) {
+      this.props.startNextNavigationStep()
+    }
   }
 }
 
-const mapStateToProps = (state: StateType): Props => {
+const mapStateToProps = (state: StateType) => {
   const { position: currentPosition, speed: currentSpeed } = state.geolocation
   const { isFetching } = state.maps.directions
   const { directions } = state.maps
@@ -149,6 +157,6 @@ const mapStateToProps = (state: StateType): Props => {
     display
   }
 }
-const mapDispatchToProps = {}
+const mapDispatchToProps = { startNextNavigationStep }
 
 export default connect(mapStateToProps, mapDispatchToProps)(RouteNavigation)

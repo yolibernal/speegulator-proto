@@ -127,8 +127,8 @@ export const getNextManeuver = createSelector(
       type,
       modifier,
       instruction,
-      voiceInstructions: voiceInstructions[0],
-      bannerInstructions: bannerInstructions[0]
+      voiceInstructions: voiceInstructions ? voiceInstructions[0] : null,
+      bannerInstructions: bannerInstructions ? bannerInstructions[0] : null
     }
     return nextManeuver
   }
