@@ -1,5 +1,5 @@
 import { SELECT_ROUTE, REQUEST_DIRECTIONS, RECEIVE_DIRECTIONS, START_NEXT_NAVIGATION_STEP, REQUEST_DIRECTIONS_FAILED } from '../actions/maps'
-import { FeatureCollection, Point, LineString } from '@turf/helpers'
+import { FeatureCollection, Point, LineString, point, Feature } from '@turf/helpers'
 import { StateType } from './index'
 import { createSelector } from 'reselect'
 
@@ -114,6 +114,7 @@ export type Maneuver = {
     ssmlAnnouncement: string
   } | null,
   bannerInstructions: object | null
+  position: Feature<Point>
 }
 
 export const getNextManeuver = createSelector(
@@ -121,14 +122,15 @@ export const getNextManeuver = createSelector(
   (currentNavigationStep): Maneuver | null => {
     if (!currentNavigationStep) return null
 
-    const { type, modifier, instruction } = currentNavigationStep.maneuver
+    const { type, modifier, instruction, location } = currentNavigationStep.maneuver
     const { voiceInstructions, bannerInstructions } = currentNavigationStep
     const nextManeuver = {
       type,
       modifier,
       instruction,
       voiceInstructions: voiceInstructions ? voiceInstructions[0] : null,
-      bannerInstructions: bannerInstructions ? bannerInstructions[0] : null
+      bannerInstructions: bannerInstructions ? bannerInstructions[0] : null,
+      position: point(location)
     }
     return nextManeuver
   }

@@ -85,7 +85,9 @@ class RouteNavigation extends React.Component<Props, ComponentState> {
           routeWaypoints={routeWaypoints}
           currentRoutePosition={routeProgress.position}
           routeGeometry={routeGeometry}
-          progressGeometry={routeProgress.geometry} />
+          progressGeometry={routeProgress.geometry}
+          nextManeuverPosition={nextManeuver.position}
+        />
       </View>
     )
   }

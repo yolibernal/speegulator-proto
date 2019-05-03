@@ -5,12 +5,14 @@ import React from 'react'
 import { StateType } from '../../../reducers'
 import styles from '../styles'
 import theme from '../../../theme'
+import { Point, Feature } from '@turf/helpers'
 
 type Props = {
   routeGeometry
   progressGeometry
   currentRoutePosition
   routeWaypoints
+  nextManeuverPosition: Feature<Point>
 }
 
 type ComponentState = {}
@@ -36,6 +38,10 @@ const mglStyles = MapboxGL.StyleSheet.create({
   waypointCircle: {
     circleRadius: 5,
     circleColor: theme.colors.primary
+  },
+  nextManuverPositionCircle: {
+    circleRadius: 7,
+    circleColor: theme.colors.accent
   }
 })
 
@@ -46,7 +52,7 @@ class NavigationMap extends React.PureComponent<Props, ComponentState> {
   }
 
   render() {
-    const { routeGeometry, progressGeometry, routeWaypoints } = this.props
+    const { routeGeometry, progressGeometry, routeWaypoints, nextManeuverPosition } = this.props
     return (
       <MapboxGL.MapView
         showUserLocation={true}
@@ -58,6 +64,7 @@ class NavigationMap extends React.PureComponent<Props, ComponentState> {
         {this.renderRoute(routeGeometry)}
         {this.renderRouteProgress(progressGeometry)}
         {this.renderWaypoints(routeWaypoints)}
+        {this.renderNextManeuverPosition(nextManeuverPosition)}
         {this.renderRoutePosition()}
       </MapboxGL.MapView>
     )
@@ -72,8 +79,22 @@ class NavigationMap extends React.PureComponent<Props, ComponentState> {
       >
         <MapboxGL.CircleLayer
           id={'waypointCircleLayer'}
-          belowLayerID={'waypointSymbolLayer'}
           style={mglStyles.waypointCircle}
+        />
+      </MapboxGL.ShapeSource>
+    )
+  }
+
+  renderNextManeuverPosition(nextManeuverPosition) {
+    return (
+      <MapboxGL.ShapeSource
+        id={'maneuverPositionSource'}
+        hitbox={{ width: 20, height: 20 }}
+        shape={nextManeuverPosition}
+      >
+        <MapboxGL.CircleLayer
+          id={'maneuverPositionCircleLayer'}
+          style={mglStyles.nextManuverPositionCircle}
         />
       </MapboxGL.ShapeSource>
     )
