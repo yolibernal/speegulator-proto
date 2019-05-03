@@ -16,8 +16,8 @@ export class VoiceCommandDisplay implements Display {
   }
 
   async maneuver(options) {
+    if (!options.voiceInstructions) return
     const { announcement } = options.voiceInstructions
-    if (!announcement) return
     await Tts.speak(announcement)
   }
 }
