@@ -7,9 +7,10 @@ import styles from '../styles'
 import theme from '../../../theme'
 
 type Props = {
-  routeGeometry,
-  progressGeometry,
+  routeGeometry
+  progressGeometry
   currentRoutePosition
+  routeWaypoints
 }
 
 type ComponentState = {}
@@ -31,6 +32,10 @@ const mglStyles = MapboxGL.StyleSheet.create({
   routePositionCircle: {
     circleRadius: 5,
     circleColor: theme.colors.primary
+  },
+  waypointCircle: {
+    circleRadius: 5,
+    circleColor: theme.colors.primary
   }
 })
 
@@ -41,7 +46,7 @@ class NavigationMap extends React.PureComponent<Props, ComponentState> {
   }
 
   render() {
-    const { routeGeometry, progressGeometry } = this.props
+    const { routeGeometry, progressGeometry, routeWaypoints } = this.props
     return (
       <MapboxGL.MapView
         showUserLocation={true}
@@ -52,8 +57,25 @@ class NavigationMap extends React.PureComponent<Props, ComponentState> {
       >
         {this.renderRoute(routeGeometry)}
         {this.renderRouteProgress(progressGeometry)}
+        {this.renderWaypoints(routeWaypoints)}
         {this.renderRoutePosition()}
       </MapboxGL.MapView>
+    )
+  }
+
+  renderWaypoints(routeWaypoints) {
+    return (
+      <MapboxGL.ShapeSource
+        id={'waypointSource'}
+        hitbox={{ width: 20, height: 20 }}
+        shape={routeWaypoints}
+      >
+        <MapboxGL.CircleLayer
+          id={'waypointCircleLayer'}
+          belowLayerID={'waypointSymbolLayer'}
+          style={mglStyles.waypointCircle}
+        />
+      </MapboxGL.ShapeSource>
     )
   }
 

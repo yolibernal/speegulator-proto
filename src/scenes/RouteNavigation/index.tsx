@@ -6,7 +6,7 @@ import styles from './styles'
 import NavigationBanner from './components/NavigationBanner'
 import NavigationMap from './components/NavigationMap'
 import { getDistanceToNextManeuver, getRouteProgress } from '../../reducers/selectors'
-import { Feature, Point } from '@turf/helpers'
+import { Feature, Point, FeatureCollection } from '@turf/helpers'
 import { Maneuver, getNextManeuver, getHasArrived } from '../../reducers/maps'
 import { getDisplay } from '../../reducers/settings'
 import isEqual from 'lodash.isequal'
@@ -20,17 +20,18 @@ type Props = {
   currentPosition: Feature<Point> | null
   currentSpeed: number
   routeGeometry,
-  nextManeuver: Maneuver | null,
-  distanceToNextManeuver: number,
+  nextManeuver: Maneuver | null
+  distanceToNextManeuver: number
   routeProgress: {
-    position,
+    position
     geometry
-  } | null,
+  } | null
   display: Display
   desiredSpeed: number
   desiredSpeedMargin: number
-  startNextNavigationStep,
+  startNextNavigationStep
   hasArrived: boolean
+  routeWaypoints: FeatureCollection<Point>
 }
 
 type ComponentState = {}
@@ -70,7 +71,7 @@ class RouteNavigation extends React.Component<Props, ComponentState> {
     const { routeGeometry } = this.props
     if (!routeGeometry) return this.renderNoRoute()
 
-    const { distanceToNextManeuver, nextManeuver, routeProgress } = this.props
+    const { distanceToNextManeuver, nextManeuver, routeProgress, routeWaypoints } = this.props
 
     // TODO: This is sometimes true on non-emulator => fix!
     if (!nextManeuver || !routeProgress) return this.renderPropertiesMissing({ nextManeuver, routeProgress })
@@ -80,7 +81,11 @@ class RouteNavigation extends React.Component<Props, ComponentState> {
         <View style={styles.banner}>
           <NavigationBanner distanceToNextManeuver={distanceToNextManeuver} maneuver={nextManeuver} />
         </View>
-        <NavigationMap currentRoutePosition={routeProgress.position} routeGeometry={routeGeometry} progressGeometry={routeProgress.geometry} />
+        <NavigationMap
+          routeWaypoints={routeWaypoints}
+          currentRoutePosition={routeProgress.position}
+          routeGeometry={routeGeometry}
+          progressGeometry={routeProgress.geometry} />
       </View>
     )
   }
@@ -151,6 +156,7 @@ const mapStateToProps = (state: StateType) => {
   const { directions } = state.maps
   const { routeGeometry } = directions
   const { desiredSpeed, desiredSpeedMargin } = state.settings
+  const { routeWaypoints } = state.maps
 
   const nextManeuver = getNextManeuver(state)
   const distanceToNextManeuver = getDistanceToNextManeuver(state)
@@ -166,6 +172,7 @@ const mapStateToProps = (state: StateType) => {
     currentSpeed,
     desiredSpeed,
     desiredSpeedMargin,
+    routeWaypoints,
     routeGeometry,
     nextManeuver,
     distanceToNextManeuver,
