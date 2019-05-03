@@ -117,6 +117,7 @@ class RouteMap extends React.Component<Props, ComponentState> {
         </MapboxGL.MapView>
         <View style={styles.footer}>
           <Button
+            disabled={ this.state.selectedWaypoints.features.length < (this.state.startFromCurrentPosition ? 1 : 2) }
             onPress={() => this.handleSelectRoute()}
           >
             Start navigation
