@@ -112,8 +112,8 @@ export type Maneuver = {
     distanceAlongGeometry: number
     announcement: string
     ssmlAnnouncement: string
-  },
-  bannerInstructions
+  } | null,
+  bannerInstructions: object | null
 }
 
 export const getNextManeuver = createSelector(

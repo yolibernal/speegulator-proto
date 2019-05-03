@@ -40,7 +40,7 @@ class NavigationBanner extends React.Component<Props, ComponentState> {
     return (
       <View>
         <Text>{distanceToNextManeuverFormatted} until {type} {modifier}</Text>
-        <Text>{instruction} // {voiceInstructions.announcement}</Text>
+        <Text>{instruction} // {voiceInstructions ? voiceInstructions.announcement : 'NO VOICE INSTRUCTIONS'}</Text>
         <Button
           onPress={() => this.props.startNextNavigationStep()}
         >
