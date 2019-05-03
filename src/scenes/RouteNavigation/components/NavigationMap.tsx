@@ -56,7 +56,7 @@ class NavigationMap extends React.PureComponent<Props, ComponentState> {
     return (
       <MapboxGL.MapView
         showUserLocation={true}
-        zoomLevel={12}
+        zoomLevel={15}
         userTrackingMode={MapboxGL.UserTrackingModes.Follow}
         styleURL={MapboxGL.StyleURL.Street}
         style={styles.map}

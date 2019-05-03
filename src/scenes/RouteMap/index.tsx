@@ -91,7 +91,7 @@ class RouteMap extends React.Component<Props, ComponentState> {
       <View style={styles.container}>
         <MapboxGL.MapView
           showUserLocation={true}
-          zoomLevel={12}
+          zoomLevel={15}
           userTrackingMode={MapboxGL.UserTrackingModes.Follow}
           styleURL={MapboxGL.StyleURL.Street}
           style={styles.map}
