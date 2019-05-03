@@ -8,7 +8,6 @@ import { Provider as StoreProvider } from 'react-redux'
 import { Provider as PaperProvider } from 'react-native-paper'
 import { createStore, applyMiddleware } from 'redux'
 import GeolocationService from './services/geolocation/GeolocationService'
-import BluetoothScanner from './services/bluetooth/BluetoothScanner'
 import rootReducer from './reducers'
 import Settings from './scenes/Settings'
 import RouteMap from './scenes/RouteMap'
@@ -47,7 +46,6 @@ export default class App extends React.Component {
       <StoreProvider store={store}>
         <PaperProvider theme={theme}>
           <GeolocationService />
-          <BluetoothScanner />
           <AppContainer />
         </PaperProvider>
       </StoreProvider>

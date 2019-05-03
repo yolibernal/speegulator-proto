@@ -2,7 +2,6 @@ import React from 'react'
 import { connect } from 'react-redux'
 import _ from 'lodash'
 
-import { BleManager } from 'react-native-ble-plx'
 import bleManager from './BleManager'
 import { addDevice } from '../../actions/bluetooth'
 import { StateType } from '../../reducers'
@@ -38,6 +37,14 @@ class BluetoothScanner extends React.Component<Props, ComponentState> {
         ))
     } catch (error) {
       console.warn('Could not start device scan:', error)
+    }
+  }
+
+  componentWillUnmount() {
+    try {
+      bleManager.stopDeviceScan()
+    } catch (error) {
+      console.warn('Could not stop device scan:', error)
     }
   }
 }

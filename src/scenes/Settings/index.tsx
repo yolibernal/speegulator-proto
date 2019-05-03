@@ -10,6 +10,7 @@ import { selectDevice } from '../../actions/bluetooth'
 import { DisplayType } from '../../services/display/DisplayType'
 import { RadioButtonItem } from './components/RadioButtonItem'
 import theme from '../../theme'
+import BluetoothScanner from '../../services/bluetooth/BluetoothScanner'
 // NOTE: convert services to renderless components? https://kyleshevlin.com/renderless-components
 
 type Props = {
@@ -70,7 +71,7 @@ class Settings extends React.Component<Props, ComponentState> {
           </RadioButton.Group>
         </List.Section>
 
-        {this.renderConnectWearable()}
+        {(this.props.displayType === DisplayType.WEARABLE) ? this.renderConnectWearable() : null}
 
         <List.Section>
           <List.Subheader>Desired speed margin</List.Subheader>
@@ -95,46 +96,49 @@ class Settings extends React.Component<Props, ComponentState> {
   }
 
   renderConnectWearable() {
-    if (!(this.props.displayType === DisplayType.WEARABLE)) return
     return (
-      <List.Section>
-        <List.Subheader>Connect wearable</List.Subheader>
-        <FlatList
-          data={this.props.devices}
-          // data={[{ id: '12345', name: 'TECO Wearable 1' }, { id: '67890', name: 'TECO Wearable 2' }]}
-          renderItem={
-            ({ item }: { item: any }) =>
-              <List.Item
-                title={item.name || 'Unnamed device'}
-                description={item.id}
-                left={() => <List.Icon color={'black'} icon={'devices-other'} />}
-                onPress={() => this.props.selectDevice(item.id)}
-                key={item.id}
-              />
-          }
-        />
-        <Divider />
-        <List.Item title={`Selected device id: ${this.props.selectedDevice}`} />
-        <Divider />
-        <TextInput
-          label={'Service UUID'}
-          value={`${this.state.serviceUuid || ''}`}
-          onChangeText={text => this.setState({ serviceUuid: text })}
-          onBlur={() => this.props.setServiceUuid(this.state.serviceUuid)}
-          style={styles.input}
-        />
-        <TextInput
-          label={'Characterstic UUID'}
-          value={`${this.state.characteristicUuid || ''}`}
-          onChangeText={text => this.setState({ characteristicUuid: text })}
-          onBlur={() => this.props.setCharacteristicUuid(this.state.characteristicUuid)}
-          style={styles.input}
-        />
-      </List.Section>
+      <>
+        <BluetoothScanner />
+
+        <List.Section>
+          <List.Subheader>Connect wearable</List.Subheader>
+          <FlatList
+            data={this.props.devices}
+            // data={[{ id: '12345', name: 'TECO Wearable 1' }, { id: '67890', name: 'TECO Wearable 2' }]}
+            renderItem={
+              ({ item }: { item: any }) =>
+                <List.Item
+                  title={item.name || 'Unnamed device'}
+                  description={item.id}
+                  left={() => <List.Icon color={'black'} icon={'devices-other'} />}
+                  onPress={() => this.props.selectDevice(item.id)}
+                  key={item.id}
+                />
+            }
+          />
+          <Divider />
+          <List.Item title={`Selected device id: ${this.props.selectedDevice}`} />
+          <Divider />
+          <TextInput
+            label={'Service UUID'}
+            value={`${this.state.serviceUuid || ''}`}
+            onChangeText={text => this.setState({ serviceUuid: text })}
+            onBlur={() => this.props.setServiceUuid(this.state.serviceUuid)}
+            style={styles.input}
+          />
+          <TextInput
+            label={'Characterstic UUID'}
+            value={`${this.state.characteristicUuid || ''}`}
+            onChangeText={text => this.setState({ characteristicUuid: text })}
+            onBlur={() => this.props.setCharacteristicUuid(this.state.characteristicUuid)}
+            style={styles.input}
+          />
+        </List.Section>
+      </>
     )
   }
 }
 
 const mapStateToProps = (state: StateType) => ({ displayType: state.settings.displayType, devices: state.bluetooth.devices, selectedDevice: state.bluetooth.selectedDevice, desiredSpeedMargin: state.settings.desiredSpeedMargin, serviceUuid: state.settings.serviceUuid, characteristicUuid: state.settings.characteristicUuid })
 
-export default connect(mapStateToProps, { changeDisplayType, selectDevice, setDesiredSpeedMargin, setServiceUuid , setCharacteristicUuid })(Settings)
+export default connect(mapStateToProps, { changeDisplayType, selectDevice, setDesiredSpeedMargin, setServiceUuid, setCharacteristicUuid })(Settings)
