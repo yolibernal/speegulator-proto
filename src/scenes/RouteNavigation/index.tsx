@@ -71,7 +71,7 @@ class RouteNavigation extends React.Component<Props, ComponentState> {
     const { routeGeometry } = this.props
     if (!routeGeometry) return this.renderNoRoute()
 
-    const { distanceToNextManeuver, nextManeuver, routeProgress, routeWaypoints } = this.props
+    const { distanceToNextManeuver, nextManeuver, routeProgress, routeWaypoints, currentSpeed } = this.props
 
     // TODO: This is sometimes true on non-emulator => fix!
     if (!nextManeuver || !routeProgress) return this.renderPropertiesMissing({ nextManeuver, routeProgress })
@@ -79,7 +79,11 @@ class RouteNavigation extends React.Component<Props, ComponentState> {
     return (
       <View style={styles.container}>
         <View style={styles.banner}>
-          <NavigationBanner distanceToNextManeuver={distanceToNextManeuver} maneuver={nextManeuver} />
+          <NavigationBanner
+            distanceToNextManeuver={distanceToNextManeuver}
+            maneuver={nextManeuver}
+            currentSpeed={currentSpeed}
+          />
         </View>
         <NavigationMap
           routeWaypoints={routeWaypoints}
@@ -135,6 +139,7 @@ class RouteNavigation extends React.Component<Props, ComponentState> {
       await display.maneuver(options)
     }
 
+    // TODO: to reducer?
     const { currentSpeed, desiredSpeed, desiredSpeedMargin } = this.props
     if (desiredSpeed > 0) {
       if (currentSpeed < (desiredSpeed - desiredSpeedMargin)) {

@@ -9,9 +9,10 @@ import { Button } from 'react-native-paper'
 import { Maneuver } from '../../../reducers/maps'
 
 type Props = {
-  distanceToNextManeuver,
+  distanceToNextManeuver
   maneuver: Maneuver
   startNextNavigationStep
+  currentSpeed: number
 }
 
 type ComponentState = {}
@@ -26,7 +27,7 @@ class NavigationBanner extends React.Component<Props, ComponentState> {
   }
 
   render() {
-    const { distanceToNextManeuver } = this.props
+    const { distanceToNextManeuver, currentSpeed } = this.props
 
     const displayInMeters = distanceToNextManeuver < 1
 
@@ -36,11 +37,12 @@ class NavigationBanner extends React.Component<Props, ComponentState> {
     const distanceToNextManeuverFormatted = `${numberFormatted} ${unit}`
 
     // TODO: show banner instructions or regular instructions? Contradict each other
-    const { type, modifier, instruction, voiceInstructions, bannerInstructions } = this.props.maneuver
+    const { type, modifier, instruction, voiceInstructions } = this.props.maneuver
     return (
       <View>
         <Text>{distanceToNextManeuverFormatted} until {type} {modifier}</Text>
         <Text>{instruction} // {voiceInstructions ? voiceInstructions.announcement : 'NO VOICE INSTRUCTIONS'}</Text>
+        <Text>{currentSpeed}</Text>
         <Button
           onPress={() => this.props.startNextNavigationStep()}
         >
