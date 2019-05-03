@@ -117,11 +117,13 @@ class RouteNavigation extends React.Component<Props, ComponentState> {
     }
 
     const { currentSpeed, desiredSpeed, desiredSpeedMargin } = this.props
-    if (currentSpeed < (desiredSpeed - desiredSpeedMargin)) {
-      await display.displayIncreaseSpeed()
-    }
-    if (currentSpeed > (desiredSpeed + desiredSpeedMargin)) {
-      await display.displayDecreaseSpeed()
+    if (desiredSpeed > 0) {
+      if (currentSpeed < (desiredSpeed - desiredSpeedMargin)) {
+        await display.displayIncreaseSpeed()
+      }
+      if (currentSpeed > (desiredSpeed + desiredSpeedMargin)) {
+        await display.displayDecreaseSpeed()
+      }
     }
 
     const { distanceToNextManeuver } = this.props
