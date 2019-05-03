@@ -7,7 +7,7 @@ import NavigationBanner from './components/NavigationBanner'
 import NavigationMap from './components/NavigationMap'
 import { getDistanceToNextManeuver, getRouteProgress } from '../../reducers/selectors'
 import { Feature, Point } from '@turf/helpers'
-import { Maneuver, getNextManeuver } from '../../reducers/maps'
+import { Maneuver, getNextManeuver, getHasArrived } from '../../reducers/maps'
 import { getDisplay } from '../../reducers/settings'
 import isEqual from 'lodash.isequal'
 import { Display } from '../../services/display/Display'
@@ -29,7 +29,8 @@ type Props = {
   display: Display
   desiredSpeed: number
   desiredSpeedMargin: number
-  startNextNavigationStep
+  startNextNavigationStep,
+  hasArrived: boolean
 }
 
 type ComponentState = {}
@@ -60,6 +61,9 @@ class RouteNavigation extends React.Component<Props, ComponentState> {
   }
 
   render() {
+    const { hasArrived } = this.props
+    if (hasArrived) return this.renderArrived()
+
     const { isFetching } = this.props
     if (isFetching) return this.renderFetching()
 
@@ -107,6 +111,14 @@ class RouteNavigation extends React.Component<Props, ComponentState> {
     )
   }
 
+  renderArrived() {
+    return (
+      <View>
+        <Text>You have arrived!</Text>
+      </View>
+    )
+  }
+
   async componentDidUpdate(prevProps: Props) {
     const { display } = this.props
     if (!isEqual(prevProps.nextManeuver, this.props.nextManeuver)) {
@@ -146,6 +158,8 @@ const mapStateToProps = (state: StateType) => {
 
   const display = getDisplay(state)
 
+  const hasArrived = getHasArrived(state)
+
   return {
     isFetching,
     currentPosition,
@@ -156,7 +170,8 @@ const mapStateToProps = (state: StateType) => {
     nextManeuver,
     distanceToNextManeuver,
     routeProgress,
-    display
+    display,
+    hasArrived
   }
 }
 const mapDispatchToProps = { startNextNavigationStep }

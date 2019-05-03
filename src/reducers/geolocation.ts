@@ -21,6 +21,7 @@ const geolocation = (
       const { coords } = action.geolocation
       const { longitude, latitude } = coords
       return {
+        ...state,
         position: point([longitude, latitude]),
         speed: coords.speed || 0
       }
