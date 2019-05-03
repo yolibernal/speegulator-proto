@@ -34,7 +34,7 @@ const configs = {
     }
   },
   maps: {
-    nextStepDistanceThreshold: 0.05
+    nextStepDistanceThreshold: 0.025
   },
   display: {
     vibrationDisplay,
