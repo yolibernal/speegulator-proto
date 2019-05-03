@@ -9,6 +9,8 @@
 * implement units (kph, mph etc.)
 * improve UI
 * "start from current position" button
+* style banner
+* style arrived screen
 
 # Test run
 
