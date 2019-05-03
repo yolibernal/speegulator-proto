@@ -1,39 +1,65 @@
-import { CHANGE_DISPLAY_TYPE, DisplayType } from '../actions/settings'
-import { DeviceVibrationDisplay } from '../services/display/DeviceVibrationDisplay'
-import configs from '../../configs'
-import { VoiceCommandDisplay } from '../services/display/VoiceCommandDisplay'
-import { Display } from '../services/display/Display'
+import { CHANGE_DISPLAY_TYPE, SET_DESIRED_SPEED, SET_DESIRED_SPEED_MARGIN, SET_SERVICE_UUID, SET_CHARACTERISTIC_UUID } from '../actions/settings'
+import { DisplayType } from '../services/display/DisplayType'
+import { createSelector } from 'reselect'
+import { StateType } from './index'
+import DisplayFactory from '../services/display/DisplayFactory'
 
-const createDisplayForType = (displayType: (DisplayType | null)) => {
-  switch (displayType) {
-    case (DisplayType.DeviceVibration):
-      return new DeviceVibrationDisplay(configs.display.vibrationDisplay)
-    case (DisplayType.VoiceCommand):
-      return new VoiceCommandDisplay(configs.display.voiceCommandDisplay)
-    // TODO: Haptic Display case
-    default:
-      return new DeviceVibrationDisplay(configs.display.vibrationDisplay)
-  }
+type SettingsState = {
+  displayType: DisplayType
+  desiredSpeed: number
+  desiredSpeedMargin: number
+  serviceUuid: string
+  characteristicUuid: string
 }
 
-type Settings = {
-  displayType: DisplayType,
-  display: Display
+const initialState: SettingsState = {
+  displayType: DisplayType.VIBRATION,
+  desiredSpeed: 0,
+  desiredSpeedMargin: 1,
+  serviceUuid: '713d0000-503e-4c75-ba94-3148f18d941e',
+  characteristicUuid: '713d0003-503e-4c75-ba94-3148f18d941e'
 }
 
-const initialState: Settings = {
-  displayType: DisplayType.DeviceVibration,
-  display: createDisplayForType(null)
-}
-
-const settings = (state = initialState, action): Settings => {
+const settings = (state = initialState, action): SettingsState => {
   switch (action.type) {
     case CHANGE_DISPLAY_TYPE:
-      const display = createDisplayForType(action.displayType)
-      return { ...state, displayType: action.displayType, display }
+      return {
+        ...state,
+        displayType: action.displayType
+      }
+    case SET_DESIRED_SPEED:
+      return {
+        ...state,
+        desiredSpeed: action.desiredSpeed
+      }
+    case SET_DESIRED_SPEED_MARGIN:
+      return {
+        ...state,
+        desiredSpeedMargin: action.desiredSpeedMargin
+      }
+    case SET_SERVICE_UUID:
+      return {
+        ...state,
+        serviceUuid: action.serviceUuid
+      }
+    case SET_CHARACTERISTIC_UUID:
+      return {
+        ...state,
+        characteristicUuid: action.characteristicUuid
+      }
     default:
       return state
   }
 }
 
 export default settings
+
+export const getDisplayType = (state: StateType) => state.settings.displayType
+
+export const getDisplay = createSelector(
+  [getDisplayType],
+  (displayType) => {
+    const display = DisplayFactory.createDisplay(displayType)
+    return display
+  }
+)

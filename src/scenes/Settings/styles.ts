@@ -1,13 +1,26 @@
 import { StyleSheet } from 'react-native'
 
 export default StyleSheet.create({
-  displayTypeContainer: {
-
+  desiredSpeedMarginContainer: {
+    minHeight: 48,
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    paddingHorizontal: 8,
   },
-  displayTypeButton: {
-
+  desiredSpeedMarginSlider: {
+    flex: 0.9
+  },
+  desiredSpeedMarginLabel: {
+    flex: 0.1
   },
   displayTypeText: {
     fontSize: 12
+  },
+  radioButtonItem: {
+    flexDirection: 'row'
+  },
+  input: {
+    backgroundColor: 'transparent'
   }
 })

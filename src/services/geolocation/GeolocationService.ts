@@ -1,14 +1,29 @@
-import { Store } from 'redux'
-import { updateGeolocation } from '../actions/geolocation'
+import React from 'react'
+import { connect } from 'react-redux'
 
-class GeolocationService {
+import { updateGeolocation } from '../../actions/geolocation'
 
-  constructor(private store: Store) {
+type Props = {
+  updateGeolocation
+}
 
+type ComponentState = {}
+class GeolocationService extends React.Component<Props, ComponentState> {
+
+  constructor(props) {
+    super(props)
   }
 
-  watchPosition() {
-    // optional: get initial position
+  render() {
+    return null
+  }
+
+  componentDidMount() {
+    this.startWatchPosition()
+  }
+
+  startWatchPosition(): void {
+    // optional: get initial position, TODO: check if needed
     navigator.geolocation.getCurrentPosition(
       (position) => {
         this.handlePositionUpdate(position)
@@ -33,7 +48,7 @@ class GeolocationService {
         this.handlePositionError(error)
       },
       {
-        // true does not work on emulator (no GPS available)
+        // NOTE: "true" does not work on emulator (no GPS available)
         enableHighAccuracy: true,
         distanceFilter: 0
       }
@@ -41,7 +56,7 @@ class GeolocationService {
   }
 
   handlePositionUpdate(position) {
-    this.store.dispatch(updateGeolocation(position))
+    this.props.updateGeolocation(position)
   }
 
   handlePositionError(error) {
@@ -49,4 +64,8 @@ class GeolocationService {
   }
 }
 
-export { GeolocationService }
+const mapDispatchToProps = {
+  updateGeolocation
+}
+
+export default connect(null, mapDispatchToProps)(GeolocationService)

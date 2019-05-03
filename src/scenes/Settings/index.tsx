@@ -1,80 +1,140 @@
 import { connect } from 'react-redux'
 import React from 'react'
-import { View, Text } from 'react-native'
-import { ListItem, ButtonGroup } from 'react-native-elements'
+import { View, FlatList, Slider, Text, KeyboardAvoidingView } from 'react-native'
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
+import { List, RadioButton, Divider, Subheading, TextInput } from 'react-native-paper'
 import styles from './styles'
-import { changeDisplayType, DisplayType } from '../../actions/settings'
-import { StateType } from '../..//reducers'
+import { changeDisplayType, setDesiredSpeedMargin, setServiceUuid, setCharacteristicUuid } from '../../actions/settings'
+import { StateType } from '../../reducers'
+import { selectDevice } from '../../actions/bluetooth'
+import { DisplayType } from '../../services/display/DisplayType'
+import { RadioButtonItem } from './components/RadioButtonItem'
+import theme from '../../theme'
+// NOTE: convert services to renderless components? https://kyleshevlin.com/renderless-components
 
 type Props = {
   // TODO: redux action (creator) type
   changeDisplayType,
-  displayType
+  selectDevice,
+  displayType,
+  devices,
+  selectedDevice,
+  setDesiredSpeedMargin,
+  desiredSpeedMargin,
+  serviceUuid,
+  characteristicUuid,
+  setServiceUuid,
+  setCharacteristicUuid
 }
 
 type ComponentState = {
-  displayType: {
-    selectedIndex: number
-  }
+  desiredSpeedMargin: number
+  serviceUuid: string
+  characteristicUuid: string
 }
 
 class Settings extends React.Component<Props, ComponentState> {
   static navigationOptions = {
-    title: 'Settings',
+    title: 'Settings'
   }
-
-  // TODO: combine with displayTypeButtons and map over
-  static indexToDisplayType = [
-    DisplayType.DeviceVibration,
-    DisplayType.VoiceCommand,
-    DisplayType.Haptic
-  ]
 
   constructor(props) {
     super(props)
     this.state = {
-      displayType: {
-        selectedIndex: 0
-      }
+      desiredSpeedMargin: this.props.desiredSpeedMargin,
+      serviceUuid: this.props.serviceUuid,
+      characteristicUuid: this.props.characteristicUuid
     }
   }
 
   render() {
-    const displayTypeButtons = ['Vibration', 'Speech', 'Wearable']
     return (
-      <View>
-        <Text>These will be the settings!</Text>
-        <Text>Unit (kmh, mph, m/s)</Text>
-        <Text>Display (device vibration, haptic display, voice command)</Text>
-        <Text>Haptic Display (connect wearable)</Text>
-        <Text>Voice Display (voice type, commands)</Text>
-        <Text>Vibration Display (vibration pattern)</Text>
-        <ListItem
-          title="Display type"
-          buttonGroup={{
-            onPress: selectedIndex => this.handleDisplayTypeUpdate(selectedIndex),
-            selectedIndex: Settings.indexToDisplayType.indexOf(this.props.displayType),
-            buttons: displayTypeButtons,
-            containerStyle: styles.displayTypeContainer,
-            buttonStyle: styles.displayTypeButton,
-            textStyle: styles.displayTypeText
-          }}
-        />
-      </View>
+      <KeyboardAwareScrollView>
+        {/*
+          TODO: setting ideas
+          Unit (kmh, mph, m/s)
+          Wearable Display (connect wearable)
+          Voice Display (voice type, commands)
+          Vibration Display (vibration pattern)
+        */}
+
+        <List.Section>
+          <List.Subheader>Display type</List.Subheader>
+          <RadioButton.Group
+            onValueChange={selectedDisplayType => this.props.changeDisplayType(selectedDisplayType)}
+            value={this.props.displayType}
+          >
+            <RadioButtonItem value={DisplayType.VIBRATION} label={'Vibration'} />
+            <RadioButtonItem value={DisplayType.VOICE} label={'Voice'} />
+            <RadioButtonItem value={DisplayType.WEARABLE} label={'Wearable'} />
+          </RadioButton.Group>
+        </List.Section>
+
+        {this.renderConnectWearable()}
+
+        <List.Section>
+          <List.Subheader>Desired speed margin</List.Subheader>
+          <View style={styles.desiredSpeedMarginContainer}>
+            <Slider
+              minimumValue={0}
+              maximumValue={5}
+              minimumTrackTintColor={theme.colors.primary}
+              maximumTrackTintColor={theme.colors.accent}
+              thumbTintColor={theme.colors.primary}
+              step={0.5}
+              value={this.props.desiredSpeedMargin}
+              onValueChange={value => this.setState({ desiredSpeedMargin: value })}
+              onSlidingComplete={() => this.props.setDesiredSpeedMargin(this.state.desiredSpeedMargin)}
+              style={styles.desiredSpeedMarginSlider}
+            />
+            <Text style={styles.desiredSpeedMarginLabel}>{this.state.desiredSpeedMargin}</Text>
+          </View>
+        </List.Section>
+      </KeyboardAwareScrollView>
     )
   }
 
-  handleDisplayTypeUpdate(selectedIndex) {
-    this.setState({
-      displayType: {
-        selectedIndex
-      }
-    })
-    const newDisplayType = Settings.indexToDisplayType[selectedIndex]
-    this.props.changeDisplayType(newDisplayType)
+  renderConnectWearable() {
+    if (!(this.props.displayType === DisplayType.WEARABLE)) return
+    return (
+      <List.Section>
+        <List.Subheader>Connect wearable</List.Subheader>
+        <FlatList
+          data={this.props.devices}
+          // data={[{ id: '12345', name: 'TECO Wearable 1' }, { id: '67890', name: 'TECO Wearable 2' }]}
+          renderItem={
+            ({ item }: { item: any }) =>
+              <List.Item
+                title={item.name || 'Unnamed device'}
+                description={item.id}
+                left={() => <List.Icon color={'black'} icon={'devices-other'} />}
+                onPress={() => this.props.selectDevice(item.id)}
+                key={item.id}
+              />
+          }
+        />
+        <Divider />
+        <List.Item title={`Selected device id: ${this.props.selectedDevice}`} />
+        <Divider />
+        <TextInput
+          label={'Service UUID'}
+          value={`${this.state.serviceUuid || ''}`}
+          onChangeText={text => this.setState({ serviceUuid: text })}
+          onBlur={() => this.props.setServiceUuid(this.state.serviceUuid)}
+          style={styles.input}
+        />
+        <TextInput
+          label={'Characterstic UUID'}
+          value={`${this.state.characteristicUuid || ''}`}
+          onChangeText={text => this.setState({ characteristicUuid: text })}
+          onBlur={() => this.props.setCharacteristicUuid(this.state.characteristicUuid)}
+          style={styles.input}
+        />
+      </List.Section>
+    )
   }
 }
 
-const mapStateToProps = (state: StateType) => ({ displayType: state.settings.displayType })
+const mapStateToProps = (state: StateType) => ({ displayType: state.settings.displayType, devices: state.bluetooth.devices, selectedDevice: state.bluetooth.selectedDevice, desiredSpeedMargin: state.settings.desiredSpeedMargin, serviceUuid: state.settings.serviceUuid, characteristicUuid: state.settings.characteristicUuid })
 
-export default connect(mapStateToProps, { changeDisplayType })(Settings)
+export default connect(mapStateToProps, { changeDisplayType, selectDevice, setDesiredSpeedMargin, setServiceUuid , setCharacteristicUuid })(Settings)

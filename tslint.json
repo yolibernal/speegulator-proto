@@ -19,11 +19,6 @@
     ],
     "no-use-before-declare": true,
     "no-unused-variable": true,
-    "strict-boolean-expressions": [
-      true,
-      "allow-null-union",
-      "allow-undefined-union"
-    ],
     "variable-name": [
       true,
       "allow-leading-underscore",
