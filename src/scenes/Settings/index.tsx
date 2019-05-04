@@ -116,7 +116,6 @@ class Settings extends React.Component<Props, ComponentState> {
             }
           />
           <Divider />
-          <List.Item title={`Selected device id: ${this.props.selectedDevice}`} />
           <Divider />
           <TextInput
             label={'Service UUID'}
