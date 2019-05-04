@@ -109,6 +109,7 @@ class Settings extends React.Component<Props, ComponentState> {
                   title={item.name || 'Unnamed device'}
                   description={item.id}
                   left={() => <List.Icon color={'black'} icon={'devices-other'} />}
+                  right={() => this.props.selectedDevice === item.id ? <List.Icon color={'black'} icon={'check'} /> : null}
                   onPress={() => this.props.selectDevice(item.id)}
                   key={item.id}
                 />

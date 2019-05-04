@@ -1,8 +1,8 @@
 import { store } from '../../App'
 import bleManager from './BleManager'
 
-// TODO: move logic back to bluetooth react component?
-// TODO: alternative create Higher Order Component withBluetoothConnection, that enables to write data?
+// TODO: check for bluetooth state (enabled?): https://github.com/Polidea/react-native-ble-plx/wiki/Bluetooth-Adapter-State
+// TODO: handle onDeviceDisconnected?
 export default class BluetoothCommunicator {
 
   private async connectToDevice(deviceIdentifier: string): Promise<void> {

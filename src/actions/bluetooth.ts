@@ -6,6 +6,7 @@ export const addDevice = device => ({
   device
 })
 
+// TODO: async action: connect to device
 export const selectDevice = deviceId => ({
   type: SELECT_DEVICE,
   deviceId
