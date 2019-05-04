@@ -53,7 +53,6 @@ type ComponentState = {
 
 class RouteMap extends React.Component<Props, ComponentState> {
   static navigationOptions = ({ navigation }: NavigationScreenProps): NavigationScreenOptions => ({
-    title: '',
     headerRight: (
       <View style={styles.row}>
         <Text style={styles.label}>Start from current position</Text>

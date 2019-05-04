@@ -22,7 +22,6 @@ const wearableDisplay = new WearableDisplay()
 
 class Home extends Component<Props, ComponentState> {
   static navigationOptions = ({ navigation }: NavigationScreenProps): NavigationScreenOptions => ({
-    title: '',
     headerRight: (
       <Button
         onPress={() => navigation.navigate('Settings')}

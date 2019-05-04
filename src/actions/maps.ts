@@ -38,7 +38,7 @@ export const fetchDirections = (routeWaypoints: FeatureCollection<Point>) => asy
     const directions = await directionsClient.fetchDirections(routeWaypoints)
     dispatch(receiveDirections(directions))
   } catch (error) {
-    console.warn(error)
+    console.warn('Could not fetch directions:', error)
     dispatch(requestDirectionsFailed())
   }
 }

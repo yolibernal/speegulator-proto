@@ -1,7 +1,7 @@
 import { connect } from 'react-redux'
 import React from 'react'
 import { StateType } from '../../reducers'
-import { View, Text } from 'react-native'
+import { View, Text, Image } from 'react-native'
 import styles from './styles'
 import NavigationBanner from './components/NavigationBanner'
 import NavigationMap from './components/NavigationMap'
@@ -37,9 +37,7 @@ type Props = {
 type ComponentState = {}
 
 class RouteNavigation extends React.Component<Props, ComponentState> {
-  static navigationOptions = {
-    title: 'RouteNavigation'
-  }
+  static navigationOptions = {}
 
   constructor(props) {
     super(props)
@@ -124,8 +122,11 @@ class RouteNavigation extends React.Component<Props, ComponentState> {
 
   renderArrived() {
     return (
-      <View>
-        <Text>You have arrived!</Text>
+      <View style={styles.containerCentered}>
+        <View style={styles.arrivedContainer}>
+          <Image source={require('../../../assets/arrived_green.png')} style={styles.arrivedImage} />
+          <Text style={styles.centeredText}>You have arrived!</Text>
+        </View>
       </View>
     )
   }

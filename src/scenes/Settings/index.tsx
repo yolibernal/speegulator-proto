@@ -35,9 +35,7 @@ type ComponentState = {
 }
 
 class Settings extends React.Component<Props, ComponentState> {
-  static navigationOptions = {
-    title: 'Settings'
-  }
+  static navigationOptions = {}
 
   constructor(props) {
     super(props)
