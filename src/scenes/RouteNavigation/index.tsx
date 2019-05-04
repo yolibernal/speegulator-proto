@@ -14,6 +14,7 @@ import { Display } from '../../services/display/Display'
 import { FetchingIndicator } from './components/FetchingIndicator'
 import configs from '../../../configs'
 import { startNextNavigationStep } from '../../actions/maps'
+import { getCurrentPosition } from '../../reducers/geolocation'
 
 type Props = {
   isFetching: boolean,
@@ -112,7 +113,7 @@ class RouteNavigation extends React.Component<Props, ComponentState> {
 
   renderPropertiesMissing({ ...args }) {
     console.warn('Properties missing:\n')
-    Object.keys(args).forEach(key => console.warn(`${key}: ${!!args[key]}\n`))
+    Object.keys(args).forEach(key => console.warn(`${key}: ${!args[key]}\n`))
     return (
       <View>
         <Text>Required navigation properties are missing :(</Text>
@@ -159,12 +160,14 @@ class RouteNavigation extends React.Component<Props, ComponentState> {
 }
 
 const mapStateToProps = (state: StateType) => {
-  const { position: currentPosition, speed: currentSpeed } = state.geolocation
+  const { speed: currentSpeed } = state.geolocation
   const { isFetching } = state.maps.directions
   const { directions } = state.maps
   const { routeGeometry } = directions
   const { desiredSpeed, desiredSpeedMargin } = state.settings
   const { routeWaypoints } = state.maps
+
+  const currentPosition = getCurrentPosition(state)
 
   const nextManeuver = getNextManeuver(state)
   const distanceToNextManeuver = getDistanceToNextManeuver(state)

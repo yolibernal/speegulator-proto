@@ -9,6 +9,7 @@ import * as turfHelpers from '@turf/helpers'
 import theme from '../../theme'
 import { NavigationScreenProps, NavigationScreenOptions } from 'react-navigation'
 import { StateType } from '../../reducers'
+import { getCurrentPosition } from '../../reducers/geolocation'
 // import locationIcon from '../../assets/location_icon.png'
 /*
 event example
@@ -169,6 +170,6 @@ class RouteMap extends React.Component<Props, ComponentState> {
   }
 }
 
-const mapStateToProps = (state: StateType) => ({ currentPosition: state.geolocation.position })
+const mapStateToProps = (state: StateType) => ({ currentPosition: getCurrentPosition(state) })
 const mapDispatchToProps = { selectRoute, fetchDirections }
 export default connect(mapStateToProps, mapDispatchToProps)(RouteMap)

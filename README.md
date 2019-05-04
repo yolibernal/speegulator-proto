@@ -11,6 +11,7 @@
 * "start from current position" button
 * style banner
 * style arrived screen
+* Demo mode
 
 # Test run
 

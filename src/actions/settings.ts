@@ -29,3 +29,9 @@ export const setCharacteristicUuid = (characteristicUuid: string) => ({
   type: SET_CHARACTERISTIC_UUID,
   characteristicUuid
 })
+
+export const SET_IS_DEMO_MODE = 'SET_IS_DEMO_MODE'
+export const setIsDemoMode = (isDemoMode: boolean) => ({
+  type: SET_IS_DEMO_MODE,
+  isDemoMode
+})

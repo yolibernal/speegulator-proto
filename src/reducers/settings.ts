@@ -1,4 +1,4 @@
-import { CHANGE_DISPLAY_TYPE, SET_DESIRED_SPEED, SET_DESIRED_SPEED_MARGIN, SET_SERVICE_UUID, SET_CHARACTERISTIC_UUID } from '../actions/settings'
+import { CHANGE_DISPLAY_TYPE, SET_DESIRED_SPEED, SET_DESIRED_SPEED_MARGIN, SET_SERVICE_UUID, SET_CHARACTERISTIC_UUID, SET_IS_DEMO_MODE } from '../actions/settings'
 import { DisplayType } from '../services/display/DisplayType'
 import { createSelector } from 'reselect'
 import { StateType } from './index'
@@ -10,6 +10,7 @@ type SettingsState = {
   desiredSpeedMargin: number
   serviceUuid: string
   characteristicUuid: string
+  isDemoMode: boolean
 }
 
 const initialState: SettingsState = {
@@ -17,7 +18,8 @@ const initialState: SettingsState = {
   desiredSpeed: 0,
   desiredSpeedMargin: 1,
   serviceUuid: '713d0000-503e-4c75-ba94-3148f18d941e',
-  characteristicUuid: '713d0003-503e-4c75-ba94-3148f18d941e'
+  characteristicUuid: '713d0003-503e-4c75-ba94-3148f18d941e',
+  isDemoMode: false
 }
 
 const settings = (state = initialState, action): SettingsState => {
@@ -47,6 +49,11 @@ const settings = (state = initialState, action): SettingsState => {
         ...state,
         characteristicUuid: action.characteristicUuid
       }
+    case SET_IS_DEMO_MODE:
+      return {
+        ...state,
+        isDemoMode: action.isDemoMode
+      }
     default:
       return state
   }
@@ -55,6 +62,7 @@ const settings = (state = initialState, action): SettingsState => {
 export default settings
 
 export const getDisplayType = (state: StateType) => state.settings.displayType
+export const getIsDemoMode = (state: StateType) => state.settings.isDemoMode
 
 export const getDisplay = createSelector(
   [getDisplayType],

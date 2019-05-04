@@ -95,6 +95,15 @@ export const getNavigationSteps = (state: StateType) => state.maps.directions.na
 export const getRouteGeometry = (state: StateType) => state.maps.directions.routeGeometry
 export const getCurrentNavigationStepIndex = (state: StateType) => state.maps.directions.currentNavigationStepIndex
 
+export const getPreviousNavigationStep = createSelector(
+  [getNavigationSteps, getCurrentNavigationStepIndex],
+  (navigationSteps, currentNavigationStepIndex) => {
+    if (currentNavigationStepIndex < 1) return null
+    const previousNavigationStep = navigationSteps ? navigationSteps[currentNavigationStepIndex - 1] : null
+    return previousNavigationStep
+  }
+)
+
 export const getCurrentNavigationStep = createSelector(
   [getNavigationSteps, getCurrentNavigationStepIndex],
   (navigationSteps, currentNavigationStepIndex) => {

@@ -1,16 +1,17 @@
 import { connect } from 'react-redux'
 import React from 'react'
-import { View, FlatList, Slider, Text, KeyboardAvoidingView } from 'react-native'
+import { View, FlatList, Slider, Text } from 'react-native'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
-import { List, RadioButton, Divider, Subheading, TextInput } from 'react-native-paper'
+import { List, RadioButton, Divider, TextInput } from 'react-native-paper'
 import styles from './styles'
-import { changeDisplayType, setDesiredSpeedMargin, setServiceUuid, setCharacteristicUuid } from '../../actions/settings'
+import { changeDisplayType, setDesiredSpeedMargin, setServiceUuid, setCharacteristicUuid, setIsDemoMode } from '../../actions/settings'
 import { StateType } from '../../reducers'
 import { selectDevice } from '../../actions/bluetooth'
 import { DisplayType } from '../../services/display/DisplayType'
 import { RadioButtonItem } from './components/RadioButtonItem'
 import theme from '../../theme'
 import BluetoothScanner from '../../services/bluetooth/BluetoothScanner'
+import { SwitchItem } from './components/SwitchItem'
 // NOTE: convert services to renderless components? https://kyleshevlin.com/renderless-components
 
 type Props = {
@@ -26,6 +27,8 @@ type Props = {
   characteristicUuid,
   setServiceUuid,
   setCharacteristicUuid
+  isDemoMode
+  setIsDemoMode
 }
 
 type ComponentState = {
@@ -89,6 +92,10 @@ class Settings extends React.Component<Props, ComponentState> {
             <Text style={styles.desiredSpeedMarginLabel}>{this.state.desiredSpeedMargin}</Text>
           </View>
         </List.Section>
+        <List.Section>
+          <List.Subheader>Demo</List.Subheader>
+          <SwitchItem label={'Demo mode enabled'} enabled={this.props.isDemoMode} onValueChange={() => this.props.setIsDemoMode(!this.props.isDemoMode)} />
+        </List.Section>
       </KeyboardAwareScrollView>
     )
   }
@@ -137,6 +144,6 @@ class Settings extends React.Component<Props, ComponentState> {
   }
 }
 
-const mapStateToProps = (state: StateType) => ({ displayType: state.settings.displayType, devices: state.bluetooth.devices, selectedDevice: state.bluetooth.selectedDevice, desiredSpeedMargin: state.settings.desiredSpeedMargin, serviceUuid: state.settings.serviceUuid, characteristicUuid: state.settings.characteristicUuid })
+const mapStateToProps = (state: StateType) => ({ displayType: state.settings.displayType, devices: state.bluetooth.devices, selectedDevice: state.bluetooth.selectedDevice, desiredSpeedMargin: state.settings.desiredSpeedMargin, serviceUuid: state.settings.serviceUuid, characteristicUuid: state.settings.characteristicUuid, isDemoMode: state.settings.isDemoMode })
 
-export default connect(mapStateToProps, { changeDisplayType, selectDevice, setDesiredSpeedMargin, setServiceUuid, setCharacteristicUuid })(Settings)
+export default connect(mapStateToProps, { changeDisplayType, selectDevice, setDesiredSpeedMargin, setServiceUuid, setCharacteristicUuid, setIsDemoMode })(Settings)
