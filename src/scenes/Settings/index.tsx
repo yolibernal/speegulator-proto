@@ -2,7 +2,7 @@ import { connect } from 'react-redux'
 import React from 'react'
 import { View, FlatList, Slider, Text } from 'react-native'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
-import { List, RadioButton, Divider, TextInput } from 'react-native-paper'
+import { List, RadioButton, Divider, TextInput, Button } from 'react-native-paper'
 import styles from './styles'
 import { changeDisplayType, setDesiredSpeedMargin, setServiceUuid, setCharacteristicUuid, setIsDemoMode } from '../../actions/settings'
 import { StateType } from '../../reducers'
@@ -12,6 +12,7 @@ import { RadioButtonItem } from './components/RadioButtonItem'
 import theme from '../../theme'
 import BluetoothScanner from '../../services/bluetooth/BluetoothScanner'
 import { SwitchItem } from './components/SwitchItem'
+import { getDisplay } from '../../reducers/settings'
 // NOTE: convert services to renderless components? https://kyleshevlin.com/renderless-components
 
 type Props = {
@@ -28,7 +29,8 @@ type Props = {
   setServiceUuid,
   setCharacteristicUuid
   isDemoMode
-  setIsDemoMode
+  setIsDemoMode,
+  display
 }
 
 type ComponentState = {
@@ -94,9 +96,38 @@ class Settings extends React.Component<Props, ComponentState> {
         </List.Section>
         <List.Section>
           <List.Subheader>Demo</List.Subheader>
-          <SwitchItem label={'Demo mode enabled'} enabled={this.props.isDemoMode} onValueChange={() => this.props.setIsDemoMode(!this.props.isDemoMode)} />
+          <SwitchItem label={'Demo mode'} enabled={this.props.isDemoMode} onValueChange={() => this.props.setIsDemoMode(!this.props.isDemoMode)} />
         </List.Section>
+        {this.props.isDemoMode ? this.renderDemoMode() : null}
       </KeyboardAwareScrollView>
+    )
+  }
+
+  renderDemoMode() {
+    const { display } = this.props
+    return (
+      <List.Section>
+        <Button onPress={async () => {
+          await display.maneuver({ modifier: 'left', voiceInstructions: { announcement: 'Turn left.' } })
+        }}>
+          Display Left
+        </Button>
+        <Button onPress={async () => {
+          await display.displayDecreaseSpeed()
+        }}>
+          Display Middle Left
+        </Button>
+        <Button onPress={async () => {
+          await display.displayIncreaseSpeed()
+        }}>
+          Display Middle Right
+        </Button>
+        <Button onPress={async () => {
+          await display.maneuver({ modifier: 'right', voiceInstructions: { announcement: 'Turn right.' } })
+        }}>
+          Display Right
+        </Button>
+      </List.Section>
     )
   }
 
@@ -144,6 +175,6 @@ class Settings extends React.Component<Props, ComponentState> {
   }
 }
 
-const mapStateToProps = (state: StateType) => ({ displayType: state.settings.displayType, devices: state.bluetooth.devices, selectedDevice: state.bluetooth.selectedDevice, desiredSpeedMargin: state.settings.desiredSpeedMargin, serviceUuid: state.settings.serviceUuid, characteristicUuid: state.settings.characteristicUuid, isDemoMode: state.settings.isDemoMode })
+const mapStateToProps = (state: StateType) => ({ displayType: state.settings.displayType, devices: state.bluetooth.devices, selectedDevice: state.bluetooth.selectedDevice, desiredSpeedMargin: state.settings.desiredSpeedMargin, serviceUuid: state.settings.serviceUuid, characteristicUuid: state.settings.characteristicUuid, isDemoMode: state.settings.isDemoMode, display: getDisplay(state) })
 
 export default connect(mapStateToProps, { changeDisplayType, selectDevice, setDesiredSpeedMargin, setServiceUuid, setCharacteristicUuid, setIsDemoMode })(Settings)
