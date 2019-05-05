@@ -3,13 +3,14 @@ import React from 'react'
 import MapboxGL from '@mapbox/react-native-mapbox-gl'
 import { View, Text } from 'react-native'
 import styles from './styles'
-import { Button, Checkbox } from 'react-native-paper'
+import { Button, Checkbox, Banner } from 'react-native-paper'
 import { selectRoute, fetchDirections } from '../../actions/maps'
 import * as turfHelpers from '@turf/helpers'
 import theme from '../../theme'
 import { NavigationScreenProps, NavigationScreenOptions } from 'react-navigation'
 import { StateType } from '../../reducers'
 import { getCurrentPosition } from '../../reducers/geolocation'
+import Icon from 'react-native-vector-icons/MaterialIcons'
 // import locationIcon from '../../assets/location_icon.png'
 /*
 event example
@@ -50,6 +51,7 @@ interface Props extends NavigationScreenProps {
 type ComponentState = {
   selectedWaypoints: turfHelpers.FeatureCollection<turfHelpers.Point>
   startFromCurrentPosition: boolean
+  visible: boolean
 }
 
 class RouteMap extends React.Component<Props, ComponentState> {
@@ -69,7 +71,8 @@ class RouteMap extends React.Component<Props, ComponentState> {
     super(props)
     this.state = {
       selectedWaypoints: turfHelpers.featureCollection([]),
-      startFromCurrentPosition: true
+      startFromCurrentPosition: true,
+      visible: true
     }
   }
 
@@ -89,6 +92,7 @@ class RouteMap extends React.Component<Props, ComponentState> {
   render() {
     return (
       <View style={styles.container}>
+        {this.renderBanner()}
         <MapboxGL.MapView
           showUserLocation={true}
           zoomLevel={15}
@@ -117,13 +121,30 @@ class RouteMap extends React.Component<Props, ComponentState> {
         </MapboxGL.MapView>
         <View style={styles.footer}>
           <Button
-            disabled={ this.state.selectedWaypoints.features.length < (this.state.startFromCurrentPosition ? 1 : 2) }
+            disabled={this.state.selectedWaypoints.features.length < (this.state.startFromCurrentPosition ? 1 : 2)}
             onPress={() => this.handleSelectRoute()}
           >
             Start navigation
           </Button>
         </View>
       </View>
+    )
+  }
+
+  renderBanner() {
+    return (
+      <Banner
+        visible={this.state.visible}
+        actions={[
+          {
+            label: 'Got it',
+            onPress: () => this.setState({ visible: false }),
+          }
+        ]}
+        image={() => <Icon name={'info-outline'} size={20} />}
+      >
+        Choose your route by pressing on the map!
+      </Banner>
     )
   }
 
