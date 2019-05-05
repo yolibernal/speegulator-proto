@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { NavigationScreenOptions, NavigationScreenProps } from 'react-navigation'
 import { connect } from 'react-redux'
 import { View } from 'react-native'
-import { TextInput, Button } from 'react-native-paper'
+import { TextInput, Button, Paragraph, Headline, Subheading } from 'react-native-paper'
 import styles from './styles'
 import { StateType } from '../../reducers'
 import { setDesiredSpeed } from '../../actions/settings'
@@ -38,6 +38,15 @@ class Home extends Component<Props, ComponentState> {
   render() {
     return (
       <View style={styles.container}>
+        <Headline style={styles.headline1}>
+          Choose your pace!
+        </Headline>
+        <Subheading style= {styles.subheading1}>
+          We will warn you when you run
+        </Subheading>
+        <Subheading>
+          too fast or too slow
+        </Subheading>
         <TextInput
           label={'Desired speed'}
           value={`${this.state.desiredSpeed || ''}`}
