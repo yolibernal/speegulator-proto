@@ -112,8 +112,8 @@ class RouteNavigation extends React.Component<Props, ComponentState> {
   }
 
   renderPropertiesMissing({ ...args }) {
-    console.warn('Properties missing:\n')
-    Object.keys(args).forEach(key => console.warn(`${key}: ${!args[key]}\n`))
+    console.log('Properties missing:\n')
+    Object.keys(args).forEach(key => console.log(`${key}: ${!args[key]}\n`))
     return (
       <View>
         <Text>Required navigation properties are missing :(</Text>

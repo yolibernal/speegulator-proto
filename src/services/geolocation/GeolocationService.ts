@@ -60,7 +60,7 @@ class GeolocationService extends React.Component<Props, ComponentState> {
   }
 
   handlePositionError(error) {
-    console.warn(error)
+    console.log('Position error:', error)
   }
 }
 
