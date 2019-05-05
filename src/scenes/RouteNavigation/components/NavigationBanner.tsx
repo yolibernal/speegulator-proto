@@ -13,6 +13,7 @@ type Props = {
   maneuver: Maneuver
   startNextNavigationStep
   currentSpeed: number
+  isDemoMode: boolean
 }
 
 type ComponentState = {}
@@ -36,24 +37,28 @@ class NavigationBanner extends React.Component<Props, ComponentState> {
     const unit = `${!displayInMeters ? 'k' : ''}m`
     const distanceToNextManeuverFormatted = `${numberFormatted} ${unit}`
 
-    // TODO: show banner instructions or regular instructions? Contradict each other
-    const { type, modifier, instruction, voiceInstructions } = this.props.maneuver
+    const { instruction } = this.props.maneuver
     return (
       <View>
-        <Text>{distanceToNextManeuverFormatted} until {type} {modifier}</Text>
-        <Text>{instruction} // {voiceInstructions ? voiceInstructions.announcement : 'NO VOICE INSTRUCTIONS'}</Text>
-        <Text>{currentSpeed}</Text>
-        <Button
-          onPress={() => this.props.startNextNavigationStep()}
-        >
-          Next step
-        </Button>
+        <Text>{instruction} in {distanceToNextManeuverFormatted}</Text>
+        <Text>Current speed: {currentSpeed}</Text>
+        {this.props.isDemoMode ? this.renderNextStepButton() : null}
       </View>
+    )
+  }
+
+  renderNextStepButton() {
+    return (
+      <Button
+        onPress={() => this.props.startNextNavigationStep()}
+      >
+        Demo: Next step
+      </Button>
     )
   }
 }
 
-const mapStateToProps = (state: StateType) => ({})
+const mapStateToProps = (state: StateType) => ({ isDemoMode: state.settings.isDemoMode })
 const mapDispatchToProps = {
   startNextNavigationStep
 }
