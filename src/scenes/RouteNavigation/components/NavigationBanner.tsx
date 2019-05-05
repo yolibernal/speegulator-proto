@@ -5,8 +5,10 @@ import numeral from 'numeral'
 import { StateType } from '../../../reducers'
 import { Text, View } from 'react-native'
 import { startNextNavigationStep } from '../../../actions/maps'
-import { Button } from 'react-native-paper'
+import { Button, Subheading } from 'react-native-paper'
 import { Maneuver } from '../../../reducers/maps'
+import Icon from 'react-native-vector-icons/MaterialIcons'
+import styles from './styles'
 
 type Props = {
   distanceToNextManeuver
@@ -37,14 +39,38 @@ class NavigationBanner extends React.Component<Props, ComponentState> {
     const unit = `${!displayInMeters ? 'k' : ''}m`
     const distanceToNextManeuverFormatted = `${numberFormatted} ${unit}`
 
-    const { instruction } = this.props.maneuver
+    const { instruction, type, modifier } = this.props.maneuver
     return (
-      <View>
-        <Text>{instruction} in {distanceToNextManeuverFormatted}</Text>
-        <Text>Current speed: {currentSpeed}</Text>
+      <View style={styles.container}>
+        <View style={styles.instructions}>
+          <View style={styles.instructionsIcon}>
+            {this.renderManeuverIcon(type, modifier)}
+          </View>
+          <View style={styles.instructionsText}>
+            <Subheading>{instruction} in {distanceToNextManeuverFormatted}</Subheading>
+            <Text>Current speed: {currentSpeed}</Text>
+          </View>
+        </View>
         {this.props.isDemoMode ? this.renderNextStepButton() : null}
       </View>
     )
+  }
+
+  renderManeuverIcon(maneuverType, modifier) {
+    const size = 40
+    switch (modifier) {
+      case 'left':
+        return <Icon style={{ marginLeft: 30 }} name={'arrow-back'} size={size} />
+      case 'right':
+        return <Icon style={{ marginLeft: 30 }} name={'arrow-forward'} size={size} />
+    }
+
+    switch (maneuverType) {
+      case 'arrive':
+        return <Icon style={{ marginLeft: 30 }} name={'check'} size={size} />
+      default:
+        return <Icon style={{ marginLeft: 30 }} name={'arrow-upward'} size={size} />
+    }
   }
 
   renderNextStepButton() {
