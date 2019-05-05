@@ -147,5 +147,5 @@ export const getNextManeuver = createSelector(
 
 export const getHasArrived = (state: StateType) => {
   const { navigationSteps, currentNavigationStepIndex } = state.maps.directions
-  return navigationSteps.length === (currentNavigationStepIndex + 1)
+  return navigationSteps.length === (currentNavigationStepIndex)
 }
