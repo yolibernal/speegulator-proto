@@ -48,7 +48,7 @@ class Home extends Component<Props, ComponentState> {
           too fast or too slow
         </Subheading>
         <TextInput
-          label={'Desired speed'}
+          label={'Desired speed in kph'}
           value={`${this.state.desiredSpeed || ''}`}
           onChangeText={text => this.setState({ desiredSpeed: Number.parseInt(text, 10) || 0 })} keyboardType="numeric"
           onBlur={() => this.props.setDesiredSpeed(this.state.desiredSpeed)}

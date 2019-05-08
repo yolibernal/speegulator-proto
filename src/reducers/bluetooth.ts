@@ -17,6 +17,9 @@ const bluetooth = (state = initialState, action): BluetoothState => {
       const foundDevice = action.device
       const otherDevices = state.devices.filter(device => device.id !== foundDevice.id)
       const idComparator = (d1, d2) => {
+        if (d1.id === 'C9:B7:CB:3F:F6:CB') return -1
+        if (d2.id === 'C9:B7:CB:3F:F6:CB') return 1
+
         if (d1.id < d2.id) return -1
         if (d1.id === d2.id) return 0
         return 1

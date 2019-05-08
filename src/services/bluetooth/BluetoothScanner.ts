@@ -33,7 +33,7 @@ class BluetoothScanner extends React.Component<Props, ComponentState> {
             if (error) console.error(error)
             this.props.addDevice(device)
           },
-          500
+          200
         ))
     } catch (error) {
       console.warn('Could not start device scan:', error)

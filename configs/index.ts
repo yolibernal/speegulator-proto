@@ -5,20 +5,20 @@ const name = 'speegulator-proto'
 const vibrationDisplay = {
   patterns: {
     speed: {
-      increase: [0, 1000, 0, 2000],
-      decrease: [0, 3000]
+      increase: [0, 1000, 1000, 1000],
+      decrease: [0, 2000]
     },
     maneuver: {
-      right: [0, 500],
-      left: [0, 250, 0, 250]
+      right: [500, 250, 500],
+      left: [500, 250, 500, 250, 500]
     }
   }
 }
 
 const voiceCommandDisplay = {
   commands: {
-    increase: 'Increase speed, Mothertrucker',
-    decrease: 'Slow down, Cowboy!'
+    increase: 'Go faster.',
+    decrease: 'Slow down, cowboy.'
   },
   duckingEnabled: true
 }

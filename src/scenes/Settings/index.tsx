@@ -140,6 +140,7 @@ class Settings extends React.Component<Props, ComponentState> {
           <List.Subheader>Connect wearable</List.Subheader>
           <FlatList
             data={this.props.devices}
+            keyExtractor={(item, index) => index.toString()}
             // data={[{ id: '12345', name: 'TECO Wearable 1' }, { id: '67890', name: 'TECO Wearable 2' }]}
             renderItem={
               ({ item }: { item: any }) =>
@@ -149,7 +150,6 @@ class Settings extends React.Component<Props, ComponentState> {
                   left={() => <List.Icon color={'black'} icon={'devices-other'} />}
                   right={() => this.props.selectedDevice === item.id ? <List.Icon color={'black'} icon={'check'} /> : null}
                   onPress={() => this.props.selectDevice(item.id)}
-                  key={item.id}
                 />
             }
           />
